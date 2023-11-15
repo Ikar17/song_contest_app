@@ -16,17 +16,21 @@
         $password = $_POST['password'];
 
         $login = htmlentities($login, ENT_QUOTES, "UTF-8");
-        $password = htmlentities($password, ENT_QUOTES, "UTF-8");
     
-        $sql = sprintf("SELECT * FROM użytkownicy WHERE Nickname = '%s' AND Hasło ='%s'",
-                mysqli_real_escape_string($connect, $login),
-                mysqli_real_escape_string($connect, $password));
+        $sql = sprintf("SELECT * FROM użytkownicy WHERE Nickname = '%s'",
+                mysqli_real_escape_string($connect, $login));
 
         if($result = @$connect->query($sql)){
 
             if($result->num_rows == 1){
-                $_SESSION['logged'] = true;
-                header('Location: ../pages/home_page.php');
+                $row = $result->fetch_assoc();
+                if(password_verify($password, $row['Haslo'])){
+                    $_SESSION['logged'] = true;
+                    header('Location: ../pages/home_page.php');
+                }else{
+                    $_SESSION['login_error'] = '<span style="color:red">Niepoprawne dane logowania</span>';
+                    header('Location: ../pages/login_page.php');
+                }
             }else{
                 $_SESSION['login_error'] = '<span style="color:red">Niepoprawne dane logowania</span>';
                 header('Location: ../pages/login_page.php');

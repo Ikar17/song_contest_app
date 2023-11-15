@@ -24,10 +24,10 @@
             </a>
             <div>
                 <button class="primary_button">
-                    <a href="login.html">Zaloguj się</a>
+                    <a href="./login_page.php">Zaloguj się</a>
                 </button>
                 <button class="primary_button">
-                    <a href="register.html">Zarejestruj się</a>
+                    <a href="./register_page.php">Zarejestruj się</a>
                 </button>
             </div>
         </div>
@@ -36,23 +36,38 @@
         <div class="container main_content main_content--form">
             <div class="main_desc main_desc--form">
                 <h2>Rejestracja</h2>
-                <form>
+                <form action="../php_scripts/register.php" method="post">
                     <label for="user_name">Nazwa użytkownika:</label><br>
-                    <input type="text" id="user_name" name="user_name"><br>
+                    <input type="text" id="user_name" name="login"><br>
+
+                    <?php
+                    if(isset($_SESSION['login_error'])){
+                        echo "<span style='color: red'>".$_SESSION['login_error']."</span>";
+                        unset($_SESSION['login_error']);
+                    }
+                    ?>
 
                     <label for="user_mail">Email:</label><br>
-                    <input type="email" id="user_mail" name="user_mail"><br>
+                    <input type="email" id="user_mail" name="mail"><br>
 
                     <label for="user_pass">Hasło:</label><br>
-                    <input type="password" id="user_pass" name="user_pass"><br>
+                    <input type="password" id="user_pass" name="password"><br>
 
                     <label for="user_pass_again">Powtórz hasło:</label><br>
-                    <input type="password" id="user_pass_again" name="user_pass_again"><br>
+                    <input type="password" id="user_pass_again" name="password_again"><br>
 
                     <input type="submit" value="Zarejestruj się" class="primary_button">
                 </form>
+
+                <?php
+                    if(isset($_SESSION['register_ok'])){
+                        echo "<span style='color: green'>Rejestracja przebiegła pomyślnie</span>";
+                        unset($_SESSION['register_ok']);
+                    }
+                ?>
+
                 <h4>Masz już konto?&nbsp
-                    <u><a href="login.html">Zaloguj się </a></u>
+                    <u><a href="./login_page.php">Zaloguj się </a></u>
                 </h4>
             </div>
         </div>
