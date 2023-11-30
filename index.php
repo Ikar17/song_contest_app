@@ -9,6 +9,8 @@
 ?>
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" href="./css/general.css" />
+    <link rel="stylesheet" href="./css/navigation.css" />
     <link rel="stylesheet" href="./css/start_page.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -9,6 +9,8 @@
 
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" href="../css/general.css" />
+    <link rel="stylesheet" href="../css/navigation.css" />
     <link rel="stylesheet" href="../css/start_page.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,8 +52,22 @@
                     <label for="user_mail">Email:</label><br>
                     <input type="email" id="user_mail" name="mail"><br>
 
+                    <?php
+                    if(isset($_SESSION['mail_error'])){
+                        echo "<span style='color: red'>".$_SESSION['mail_error']."</span>";
+                        unset($_SESSION['mail_error']);
+                    }
+                    ?>
+
                     <label for="user_pass">Hasło:</label><br>
                     <input type="password" id="user_pass" name="password"><br>
+
+                    <?php
+                    if(isset($_SESSION['password_error'])){
+                        echo "<span style='color: red'>".$_SESSION['password_error']."</span>";
+                        unset($_SESSION['password_error']);
+                    }
+                    ?>
 
                     <label for="user_pass_again">Powtórz hasło:</label><br>
                     <input type="password" id="user_pass_again" name="password_again"><br>

@@ -9,6 +9,8 @@
 
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" href="../css/general.css" />
+    <link rel="stylesheet" href="../css/navigation.css" />
     <link rel="stylesheet" href="../css/home_page.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +27,13 @@
             <div class="nav_profile">
                 <img src="../assets/user.png" alt="avatar" />
                 <button class="nav_profile_button">
-                    <a href="../php_scripts/logout.php">Przemek</a>
+                    <a href="../php_scripts/logout.php">
+                        <?php
+                            if(isset($_SESSION['login'])){
+                                echo $_SESSION['login'];
+                            }
+                        ?>
+                    </a>
                     <img src="../assets/down.png"/>
                 </button>
             </div>
@@ -46,10 +54,12 @@
                         <img src="../assets/rules_white.png" />
                         <h3>Regulamin</h3>
                     </div>
-                    <div class="tile">
-                        <img src="../assets/player_white.png" />
-                        <h3>Aktualna edycja</h3>
-                    </div>
+                    <a href="./active_edition.php">
+                        <div class="tile">
+                            <img src="../assets/player_white.png" />
+                            <h3>Aktualna edycja</h3>
+                        </div>
+                    </a>
                     <div class="tile">
                         <img src="../assets/ranking_white.png" />
                         <h3>Ranking użytkowników</h3>

@@ -26,6 +26,7 @@
                 $row = $result->fetch_assoc();
                 if(password_verify($password, $row['Haslo'])){
                     $_SESSION['logged'] = true;
+                    $_SESSION['login'] = $row['Nickname'];
                     header('Location: ../pages/home_page.php');
                 }else{
                     $_SESSION['login_error'] = '<span style="color:red">Niepoprawne dane logowania</span>';

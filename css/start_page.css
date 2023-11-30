@@ -1,20 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-}
-
-h1, h2, h3, h4, h5 {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
-a {
-  text-decoration: none;
-  color: unset;
-}
-
 form {
   display: flex;
   flex-direction: column;
@@ -28,14 +11,6 @@ form input {
   margin-bottom: 10px;
 }
 
-nav {
-  width: 100%;
-  height: 110px;
-  background-color: #03045e;
-  position: sticky;
-  top: 0;
-}
-
 main {
   width: 100%;
   height: calc(100vh - 110px);
@@ -44,29 +19,11 @@ main {
   background-size: cover;
 }
 
-footer {
-  width: 100%;
-  height: 120px;
-  background-color: #03045e;
-}
-
 .container {
   width: 80%;
   height: 100%;
   margin: 0 auto;
   font-family: "Roboto Mono", monospace;
-}
-
-.nav_content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
-
-.nav_logo {
-  display: flex;
-  gap: 12px;
 }
 
 .primary_button {

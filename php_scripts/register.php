@@ -5,12 +5,17 @@
 
     $login = $_POST['login'];
     $password = $_POST['password'];
-    $password_r = $_POST['password_again'];
+    $password_again = $_POST['password_again'];
     $mail = $_POST['mail'];
 
     //validation
     $validation_ok = true;
 
+
+    if($password != $password_again){
+        $_SESSION['password_error'] = "Podane hasła są różne";
+        $validation_ok = false;
+    }
 
 
     //paswword hash

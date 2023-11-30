@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto Mono", monospace;
+}
+
+.container {
+  width: 80%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+footer {
+  width: 100%;
+  height: 120px;
+  background-color: #03045e;
+}
+
+.linia {
+  width: 100%;
+  height: 15px;
+  background-color: black;
+}/*# sourceMappingURL=general.css.map */
