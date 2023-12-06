@@ -32,4 +32,15 @@ nav {
   background-color: transparent;
   color: white;
   border: none;
-}/*# sourceMappingURL=navigation.css.map */
+}
+
+.nav_links{
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.links_to_pages{
+  display: flex;
+  gap: 30px;
+}

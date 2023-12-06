@@ -38,7 +38,8 @@
             if($result->num_rows == 0){
                 $result->close();
                 //insert new user
-                $sql = "INSERT INTO użytkownicy VALUES(NULL, '$login', '$mail', '$password_h', 2)";
+                $user_role_id = 2;
+                $sql = "INSERT INTO użytkownicy VALUES(NULL, '$login', '$mail', '$password_h', '$user_role_id')";
                 if($db_connect->query($sql)){
                     $_SESSION['register_ok'] = true;
                 }else{

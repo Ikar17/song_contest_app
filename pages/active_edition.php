@@ -7,7 +7,7 @@
     }
 
     require_once "../php_scripts/db_config.php";
-    require_once "../php_scripts/api.php";
+    require_once "../php_scripts/user_api.php";
     try{
         $db_connect = new mysqli($host, $db_user, $db_password, $db_name);
         if($db_connect->connect_errno != 0) throw new Exception("Database connection error");
@@ -21,7 +21,7 @@
 
 <!DOCTYPE html>
 <head>
-    <link rel="stylesheet" href="../css/navigation.css" />
+    <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>"/>
     <link rel="stylesheet" href="../css/general.css" />
     <link rel="stylesheet" href="../css/activeEdition.css?v=<?php echo time(); ?>" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,19 +36,36 @@
                 <img src="../assets/logo.png" alt="logo" />
                 <h1>Song Contest</h1>
             </a>
-            <div class="nav_profile">
-                <img src="../assets/user.png" alt="avatar" />
-                <button class="nav_profile_button">
-                    <a href="../php_scripts/logout.php">
-                        <?php
-                            if(isset($_SESSION['login'])){
-                                echo $_SESSION['login']['nickname'];
-                            }
-                        ?>
+            <div class="nav_links">
+                <div class="links_to_pages">
+                    <a href="./home_page.php">
+                        Strona główna
                     </a>
-                    <img src="../assets/down.png"/>
-                </button>
+                    <?php
+                        if($_SESSION['login']['role'] == "Admin"){
+                            echo <<< ENDL
+                            <a href="./admin_panel.php">
+                                Panel admina
+                            </a>
+                            ENDL;
+                        }
+                    ?>
+                </div>
+                <div class="nav_profile">
+                    <img src="../assets/user.png" alt="avatar" />
+                    <button class="nav_profile_button">
+                        <a href="../php_scripts/logout.php">
+                            <?php
+                                if(isset($_SESSION['login'])){
+                                    echo $_SESSION['login']['nickname'];
+                                }
+                            ?>
+                        </a>
+                        <img src="../assets/down.png"/>
+                    </button>
+                </div>
             </div>
+            
         </div>
     </nav>
 
