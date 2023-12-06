@@ -22,8 +22,8 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>"/>
-    <link rel="stylesheet" href="../css/general.css" />
-    <link rel="stylesheet" href="../css/activeEdition.css?v=<?php echo time(); ?>" />
+    <link rel="stylesheet" href="../css/general.css?v=<?php echo time(); ?>" />
+    <link rel="stylesheet" href="../css/admin_panel.css?v=<?php echo time(); ?>" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
@@ -76,6 +76,45 @@
     </section>
 
     <main>
+        <section class="container">
+            <h2 class="headline">Dodaj nową edycję </h2>
+            <form action="../php_scripts/add_new_edition.php" method="POST">
+                <label for="participant_deadline"> Termin zgłoszeń <label>
+                <input type="datetime-local" name="participant_deadline" id="participant_deadline"></br>
+
+                <label for="voting_deadline"> Termin głosowania <label>
+                <input type="datetime-local" name="voting_deadline" id="voting_deadline"></br>
+
+                <label for="result_deadline"> Termin wyników <label>
+                <input type="datetime-local" name="result_deadline" id="result_deadline"></br>
+                
+                <input type="submit" value="Dodaj nową edycję">
+            </form>
+        </section>
+        <section class="container">
+            <h2 class="headline">Zaktualizuj edycję </h2>
+            <div>
+                <form method="POST" action="./admin_panel.php">
+                    <label for="select_edition">Wybierz edycję: </label>
+                    <select id="select_edition" name="select_edition">
+                        <?php echo show_editions($db_connect); ?>
+                    </select>
+                    <input type="submit" value="Potwierdź">
+                </form>
+            </div>
+            
+            </br></br>
+
+            <div>
+            <?php 
+                if(isset($_POST['select_edition'])){
+                    echo show_editable_edition($db_connect, $_POST['select_edition']);
+                    unset($_POST['select_edition']);
+                }
+            ?>
+            </div>
+
+        </section>
        
     </main>
     <footer>

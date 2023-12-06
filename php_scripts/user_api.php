@@ -1,8 +1,21 @@
 <?php
 
 function does_user_participate($db_connect, $nickname, $edition){
+
+    //pobieranie id edycji
+    $sql = "SELECT Id FROM edycje WHERE Nr_edycji ='$edition'";
+    $response = $db_connect->query($sql);
+    if($response == false || $response->num_rows == 0){
+        return false;
+    }
+
+    $row = $response->fetch_assoc();
+    $edition_id = $row['Id'];
+    $response->close();
+
+
     $sql = "SELECT * FROM piosenki JOIN użytkownicy ON użytkownicy.Id = piosenki.id_uzytkownika
-     WHERE użytkownicy.Nickname = '$nickname' AND Id_edycji = '$edition'";
+     WHERE użytkownicy.Nickname = '$nickname' AND Id_edycji = '$edition_id'";
 
     $result = $db_connect->query($sql);
     if($result == false) return true;
@@ -136,6 +149,11 @@ function show_results($db_connect, $edition){
         $songs_results_arrray["$id"] = [0,$singer,$title];
     }
     $result->close();
+
+    //brak piosenek
+    if(count($songs_id_list) == 0){
+        return "<div>Brak piosenek</div>";
+    }
 
     //pobranie wynikow glosowania - pierwsze miejsca
     $sql = "SELECT Id_piosenki_1, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id

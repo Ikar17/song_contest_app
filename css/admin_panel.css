@@ -1,0 +1,12 @@
+.headline{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0;
+}
+
+form input, select{
+    height: 40px;
+    margin: 10px 0px;
+    font-size: 130%;
+}

@@ -34,9 +34,25 @@
     $user_id = $row['Id'];
     $result->close();
 
+    //pobieranie id edycji
+    $edition = $_SESSION['edition'];
+    $sql = "SELECT Id FROM edycje WHERE Nr_Edycji = '$edition'";
+
+    $result = $db_connect->query($sql);
+    if($result == false || $result->num_rows == 0){
+        unset($_POST['author']);
+        unset($_POST['songTitle']);
+        unset($_POST['songUrl']);
+        header('Location: ../pages/active_edition.php');
+        exit();
+    }
+
+    $row = $result->fetch_assoc();
+    $edition_id = $row['Id'];
+    $result->close();
+    
 
     //wstawianie nowej piosenki
-    $edition_id = $_SESSION['edition'];
     $singer = $_POST['author'];
     $title = $_POST['songTitle'];
     $link = $_POST['songUrl'];
@@ -44,9 +60,16 @@
     $sql = "INSERT INTO piosenki (Wykonawca, TytuL, Link, Id_uzytkownika, Id_edycji) 
             VALUES('$singer', '$title', '$link', '$user_id', '$edition_id')";
 
-    $db_connect->query($sql);
+    $res = $db_connect->query($sql);
 
     $db_connect->close();
+
+    echo $res;
+    if($res == false){
+        echo "blaad";
+    }
+    exit();
+
     unset($_POST['author']);
     unset($_POST['songTitle']);
     unset($_POST['songUrl']);

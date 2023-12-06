@@ -22,7 +22,7 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>"/>
-    <link rel="stylesheet" href="../css/general.css" />
+    <link rel="stylesheet" href="../css/general.css?v=<?php echo time(); ?>" />
     <link rel="stylesheet" href="../css/activeEdition.css?v=<?php echo time(); ?>" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -138,8 +138,8 @@
                         <section class="participants">
                             <?php
                                 $participants = get_all_participants($db_connect,$nr_edycji);
-                                for($i = 0; $i < count($participants); $i++){
-                                    $participant = $participants[$i];
+                                for($x = 0; $x < count($participants); $x++){
+                                    $participant = $participants[$x];
                                     $nickname = $participant['nickname'];
                                     $singer = $participant['singer'];
                                     $title = $participant['title'];
