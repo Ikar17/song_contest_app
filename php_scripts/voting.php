@@ -22,7 +22,7 @@
     $id_song_second_place = $_POST['second_place'];
     $id_song_third_place = $_POST['third_place'];
     $edition = $_SESSION['voting_edition'];
-    $nickname = $_SESSION['login'];
+    $nickname = $_SESSION['login']['nickname'];
 
 
     //pobieram id edycji

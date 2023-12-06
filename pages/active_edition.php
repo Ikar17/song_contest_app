@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    if(!isset($_SESSION['logged'])){
+    if(!isset($_SESSION['login'])){
         header('Location: ../index.php');
         exit();
     }
@@ -42,7 +42,7 @@
                     <a href="../php_scripts/logout.php">
                         <?php
                             if(isset($_SESSION['login'])){
-                                echo $_SESSION['login'];
+                                echo $_SESSION['login']['nickname'];
                             }
                         ?>
                     </a>
@@ -99,7 +99,7 @@
                         <div class="subtitle"><h2>Zgłoszenia</h2></div>
                         <section class="participation_form"> 
                             <?php 
-                            if(does_user_participate($db_connect, $_SESSION['login'],$nr_edycji)){
+                            if(does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
                                 echo "<h3>Zgłosiłeś już swoją propozycję</h3>";
                             }else{
                                 echo<<<ENDL
@@ -145,7 +145,7 @@
 
                         <div class="subtitle"><h2>Głosowanie</h2></div>
                         <section class="voting">
-                            <?php echo show_voting($db_connect, $_SESSION['login'], $nr_edycji); ?>
+                            <?php echo show_voting($db_connect, $_SESSION['login']['nickname'], $nr_edycji); ?>
                         </section>
 
                         <div class="line"></div>

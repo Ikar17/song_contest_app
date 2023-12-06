@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if(!isset($_SESSION['logged']) || !isset($_SESSION['login'])){
+    if(!isset($_SESSION['login'])){
         header('Location: ../index.php');
         exit();
     }
@@ -18,7 +18,7 @@
 
 
     //pobieranie id użytkownika
-    $nickname = $_SESSION['login'];
+    $nickname = $_SESSION['login']['nickname'];
     $sql = "SELECT Id FROM użytkownicy WHERE Nickname = '$nickname'";
 
     $result = $db_connect->query($sql);
