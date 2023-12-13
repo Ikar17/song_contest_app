@@ -24,6 +24,10 @@ nav {
   gap: 5px;
 }
 
+.nav_profile a{
+  margin-left: 15px;
+}
+
 .nav_profile_button {
   display: flex;
   align-items: center;

@@ -42,14 +42,12 @@
                 <div class="nav_profile">
                     <img src="../assets/user.png" alt="avatar" />
                     <button class="nav_profile_button">
-                        <a href="../php_scripts/logout.php">
-                            <?php
-                                if(isset($_SESSION['login'])){
-                                    echo $_SESSION['login']['nickname'];
-                                }
-                            ?>
-                        </a>
-                        <img src="../assets/down.png"/>
+                        <?php
+                            if(isset($_SESSION['login'])){
+                                echo $_SESSION['login']['nickname'];
+                            }
+                        ?>
+                        <a href="../php_scripts/logout.php">Wyloguj się</a>
                     </button>
                 </div>
             </div>
