@@ -1,0 +1,31 @@
+.container_ranking{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    min-height: 50vh;
+}
+
+table{
+    width: 50%;
+    margin: 40px 0px;
+}
+
+table, th, td {
+    border:1px solid black;
+}
+
+th, td{
+    text-align: center;
+}
+
+.place_1{
+    background-color: yellow;
+}
+
+.place_2{
+    background-color: gray;
+}
+
+.place_3{
+    background-color: brown;
+}

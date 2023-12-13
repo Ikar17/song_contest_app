@@ -90,6 +90,7 @@ function does_user_voting($db_connect, $nickname, $edition){
 function show_voting($db_connect, $nickname, $edition){
     //sprawdzenie czy aktualnie jest czas głosowania
 
+
     //sprawdzenie czy uzytkownik zgłosił się
     if(!does_user_participate($db_connect, $nickname, $edition)){
         return "<h3>Musisz najpierw zgłosić swoją propozycję</h3>";
@@ -219,5 +220,119 @@ function compare_results($first, $second){
     return $first[0] < $second[0];
 }
 
+function get_all_users($db_connect){
+    $sql = "SELECT * FROM użytkownicy";
+    $response = $db_connect->query($sql);
+    if($response == false || $response->num_rows==0) return [];
+
+    $users = [];
+    for($i=0; $i<$response->num_rows; $i++){
+        $row = $response->fetch_assoc();
+        $users[$row['Id']] = $row;
+    }
+
+    $response->close();
+    return $users;
+}
+
+
+function show_users_ranking($db_connect){
+    $users = get_all_users($db_connect);
+    if(count($users) == 0) return "";
+
+    //tworzenie tablicy rezultatow
+    $results = [];
+    foreach ($users as $user) {
+        $results[$user['Id']] = array("user" => $user, "points" => 0);
+    } 
+
+    //pobieranie wszystkich rezultatow
+    $sql = "SELECT * FROM głosowanie";
+    $response = $db_connect->query($sql);
+    if($response == false || $response->num_rows==0) return "";
+
+    //uzupełnienie tablicy rezultatow
+    for($i=0; $i<$response->num_rows; $i++){
+        $voting = $response->fetch_assoc();
+        //pierwsze miejsce - 5pkt
+        $first_place_song_id = $voting['Id_piosenki_1'];
+        $user_id = get_user_id_from_song_id($db_connect, $first_place_song_id);
+        if($user_id == -1){
+            $response->close();
+            return "";
+        }
+        $results[$user_id]['points'] += 5; 
+
+        //drugie miejsce - 3pkt
+        $second_place_song_id = $voting['Id_piosenki_2'];
+        $user_id = get_user_id_from_song_id($db_connect, $second_place_song_id);
+        if($user_id == -1){
+            $response->close();
+            return "";
+        }
+        $results[$user_id]['points'] += 3; 
+
+        //trzecie miejsce - 1pkt
+        $third_place_song_id = $voting['Id_piosenki_3'];
+        $user_id = get_user_id_from_song_id($db_connect, $third_place_song_id);
+        if($user_id == -1){
+            $response->close();
+            return "";
+        }
+        $results[$user_id]['points'] += 1; 
+
+    }
+
+    $response->close();
+
+    //sortowanie miejsc
+    usort($results,'compare_users');
+
+
+    //tworzenie widoku
+    $html = "
+        <table>
+            <tr>
+                <th>Miejsce</th>
+                <th>Użytkownik</th>
+                <th>Liczba punktów</th>
+            </tr>
+        ";
+
+    $place = 1;
+    foreach($results as $result){
+        $user_name = $result['user']['Nickname'];
+        $user_points = $result['points'];
+        $html = $html."
+            <tr class='place_$place'>
+                <td>$place</td>
+                <td>$user_name</td>
+                <td>$user_points</td>
+            </tr>
+        ";
+        $place += 1;
+    }
+
+    $html = $html."</table>";
+
+    echo $html;
+
+}
+
+function get_user_id_from_song_id($db_connect, $song_id){
+    $sql = "SELECT użytkownicy.Id FROM użytkownicy JOIN piosenki ON piosenki.Id_uzytkownika = użytkownicy.Id WHERE piosenki.Id = '$song_id'";
+    $response = $db_connect->query($sql);
+    if($response == false || $response->num_rows == 0){
+        return -1;
+    }
+    $row = $response->fetch_assoc();
+    $user_id = $row['Id'];
+    $response->close();
+    return $user_id;
+}
+
+function compare_users($first_user, $second_user){
+    return $first_user['points'] < $second_user['points'];
+}
 
 ?>

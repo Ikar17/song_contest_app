@@ -77,10 +77,12 @@
                             <h3>Aktualna edycja</h3>
                         </div>
                     </a>
-                    <div class="tile">
-                        <img src="../assets/ranking_white.png" />
-                        <h3>Ranking użytkowników</h3>
-                    </div>
+                    <a href="./rankings_page.php">
+                        <div class="tile">
+                            <img src="../assets/ranking_white.png" />
+                            <h3>Ranking użytkowników</h3>
+                        </div>
+                    </a>
                     <a href="./song_archive.php">
                         <div class="tile">
                             <img src="../assets/music_archive_white.png" />

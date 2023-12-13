@@ -20,7 +20,7 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
     unset($_SESSION['update_edition_number']);
     unset($_POST['status']);
 
-    //walidacja 
+    //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić zmiany
 
     if($participant_deadline == null || $voting_deadline==null ||  $result_deadline==null){
         header("Location: ../pages/admin_panel.php");
