@@ -5,16 +5,29 @@
         header('Location: ../index.php');
         exit();
     }
+
+    require_once "../php_scripts/db_config.php";
+    require_once "../php_scripts/user_api.php";
+    try{
+        $db_connect = new mysqli($host, $db_user, $db_password, $db_name);
+        if($db_connect->connect_errno != 0) throw new Exception("Database connection error");
+
+    }catch(Exception $e){
+        echo $e;
+        exit();
+    }
+
 ?>
 
 <!DOCTYPE html>
 <head>
-    <link rel="stylesheet" href="../css/general.css" />
-    <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>" />
-    <link rel="stylesheet" href="../css/home_page.css" />
+    <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>"/>
+    <link rel="stylesheet" href="../css/general.css?v=<?php echo time(); ?>" />
+    <link rel="stylesheet" href="../css/search_songs.css?v=<?php echo time(); ?>" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <script src="../js/script.js?v=<?php echo time(); ?>"></script>  
     <title>Song Contest</title>
 </head>
 <body>
@@ -56,47 +69,39 @@
             
         </div>
     </nav>
-    <main>
-        <div class="container">
-            <div class="main_content">
-                <header>
-                    <div class="note note-down"></div>
-                    <div class="note note-up"></div>
-                    <h1>strona główna</h1>
-                    <div class="note note-up"></div>
-                    <div class="note note-down"></div>
-                </header>
-                <div class="tiles">
-                    <div class="tile">
-                        <img src="../assets/rules_white.png" />
-                        <h3>Regulamin</h3>
-                    </div>
-                    <a href="./active_edition.php">
-                        <div class="tile">
-                            <img src="../assets/player_white.png" />
-                            <h3>Aktualna edycja</h3>
-                        </div>
-                    </a>
-                    <div class="tile">
-                        <img src="../assets/ranking_white.png" />
-                        <h3>Ranking użytkowników</h3>
-                    </div>
-                    <a href="./song_archive.php">
-                        <div class="tile">
-                            <img src="../assets/music_archive_white.png" />
-                            <h3>Archiwum piosenek</h3>
-                        </div>
-                    </a>
-                    <div class="tile">
-                        <img src="../assets/edition_archive_white.png" />
-                        <h3>Archiwum edycji</h3>
-                    </div>
-                </div>
+
+    <section class="website_title">
+        <div>
+            <h1>ARCHIWUM PIOSENEK</h1>   
+        </div>      
+    </section>
+
+    <main class="container">
+        <div id="searchSongForm">
+            <div>
+                <label for="searchSongBySinger">Wyszukaj po wykonawcy: </label>
+                <input id="searchSongBySinger" type="text">
+            </div>
+            <div>                  
+                <label for="searchSongByTitle">Wyszukaj po tytule: </label>
+                <input id="searchSongByTitle" type="text">
             </div>
         </div>
+        <div class="line"></div>
+        <div id="searchSongsResults">
+
+        </div>
+        
     </main>
     <footer>
 
     </footer>
 </body>
 </html>
+
+
+<?php 
+
+    //zamykanie połączenie z bazą danych
+    $db_connect->close();
+?>

@@ -58,3 +58,9 @@ footer {
   text-shadow: 10px 10px 30px #000000;
   letter-spacing: 3px;
 }
+
+.line {
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(#e66465, #0516cd);
+}
