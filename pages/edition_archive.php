@@ -7,7 +7,7 @@
     }
 
     require_once "../php_scripts/db_config.php";
-    require_once "../php_scripts/user_api.php";
+    require_once "../php_scripts/archive_api.php";
     try{
         $db_connect = new mysqli($host, $db_user, $db_password, $db_name);
         if($db_connect->connect_errno != 0) throw new Exception("Database connection error");
@@ -72,26 +72,28 @@
 
     <section class="website_title">
         <div>
-            <h1>ARCHIWUM PIOSENEK</h1>   
+            <h1>ARCHIWUM EDYCJI</h1>   
         </div>      
     </section>
 
     <main class="container">
-        <div id="searchSongForm">
-            <div>
-                <label for="searchSongBySinger">Wyszukaj po wykonawcy: </label>
-                <input id="searchSongBySinger" type="text">
-            </div>
-            <div>                  
-                <label for="searchSongByTitle">Wyszukaj po tytule: </label>
-                <input id="searchSongByTitle" type="text">
-            </div>
+        <div>
+            <form method="POST" action="./edition_archive.php">
+                <label for="select_edition">Wybierz edycję: </label>
+                <select id="select_edition" name="select_edition_archive">
+                    <?php echo show_editions_options($db_connect); ?>
+                </select>
+                <input type="submit" value="Potwierdź">
+            </form>
         </div>
-        <div class="line"></div>
-        <div id="searchSongsResults">
-
+        <div class="edition_search_results">
+            <?php 
+                if(isset($_POST['select_edition_archive'])){
+                    echo show_edition($db_connect, $_POST['select_edition_archive']);
+                    unset($_POST['select_edition_archive']);
+                }
+            ?>                  
         </div>
-        
     </main>
     <footer>
 

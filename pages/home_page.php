@@ -87,10 +87,12 @@
                             <h3>Archiwum piosenek</h3>
                         </div>
                     </a>
-                    <div class="tile">
-                        <img src="../assets/edition_archive_white.png" />
-                        <h3>Archiwum edycji</h3>
-                    </div>
+                    <a href="./edition_archive.php">
+                        <div class="tile">
+                            <img src="../assets/edition_archive_white.png" />
+                            <h3>Archiwum edycji</h3>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
