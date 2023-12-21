@@ -83,12 +83,27 @@ function get_all_participants_without_one_user($db_connect, $edition, $userNick)
 }
 
 function does_user_voting($db_connect, $nickname, $edition){
-    return false;
+    $sql = "SELECT * FROM głosowanie JOIN użytkownicy ON głosowanie.Id_uzytkownika = użytkownicy.Id
+            WHERE Id_edycji = '$edition' AND użytkownicy.Nickname = '$nickname'";
+
+    $response = $db_connect->query($sql);
+    if($response && $response->num_rows == 0){
+        $response->close();
+        return false;
+    }
+    return true;
 
 }
 
-function show_voting($db_connect, $nickname, $edition){
+function show_voting($db_connect, $nickname, $edition, $voting_starttime, $results_time){
     //sprawdzenie czy aktualnie jest czas głosowania
+    if(date('Y-m-d H:i:s') < $voting_starttime){
+        return "<h3>Głosowanie ruszy po zakończeniu przyjmowania zgłoszeń</h3>";
+    }
+
+    if(date('Y-m-d H:i:s') >= $results_time){
+        return "<h3>Głosowanie zostało zakończone</h3>";
+    }
 
 
     //sprawdzenie czy uzytkownik zgłosił się
@@ -134,7 +149,12 @@ function show_voting($db_connect, $nickname, $edition){
 }
 
 
-function show_results($db_connect, $edition){
+function show_results($db_connect, $edition, $results_time){
+
+    if(date('Y-m-d H:i:s') < $results_time){
+        return "<h3>Wyniki zostaną opublikowane po zakończeniu głosowania</h3>";
+    }
+
     //pobranie listy piosenek bioracych udzial w edycji
     $sql = "SELECT DISTINCT piosenki.Id, Wykonawca, Tytul FROM piosenki JOIN edycje ON piosenki.id_edycji = edycje.id WHERE edycje.Nr_edycji ='$edition'";
     $result = $db_connect->query($sql);

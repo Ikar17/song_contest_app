@@ -104,9 +104,9 @@
 
                         <div class="subtitle"><h2>Terminarz</h2></div>
                         <section class="schedule">
-                            <p>Termin zgłoszeń: <?php echo $data_zgloszen?> </p>
-                            <p>Termin głosowania: <?php echo $data_glosowania?></p>
-                            <p>Termin wyników: <?php echo $data_wynikow?></p>
+                            <p>Start zgłoszeń: <?php echo $data_zgloszen?> </p>
+                            <p>Start głosowania: <?php echo $data_glosowania?></p>
+                            <p>Wyniki: <?php echo $data_wynikow?></p>
                         </section>
 
                         <div class="line"></div>
@@ -114,9 +114,13 @@
                         <div class="subtitle"><h2>Zgłoszenia</h2></div>
                         <section class="participation_form"> 
                             <?php 
-                            if(does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
+                            if(date('Y-m-d H:i:s') >= $data_glosowania){
+                                echo "<h3>Przyjmowanie zgłoszeń zostało zamknięte</h3>";
+                            }
+                            else if(does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
                                 echo "<h3>Zgłosiłeś już swoją propozycję</h3>";
-                            }else{
+                            }
+                            else{
                                 echo<<<ENDL
                                 <form method="POST" action="../php_scripts/add_participant.php">
                                     <label for="name">Wykonawca piosenki</label>
@@ -160,14 +164,22 @@
 
                         <div class="subtitle"><h2>Głosowanie</h2></div>
                         <section class="voting">
-                            <?php echo show_voting($db_connect, $_SESSION['login']['nickname'], $nr_edycji); ?>
+                            <?php echo show_voting($db_connect, $_SESSION['login']['nickname'], $nr_edycji, $data_glosowania,$data_wynikow); 
+                                  
+                                  if(isset($_SESSION['voting_error'])){
+                                    $statement = $_SESSION['voting_error'];
+                                    echo "<span style='color:red'> $statement </span>";
+                                    unset($_SESSION['voting_error']);
+                                  }
+                            
+                            ?>
                         </section>
 
                         <div class="line"></div>
 
                         <div class="subtitle"><h2>Wyniki</h2></div>
                         <section class="results">
-                            <?php echo show_results($db_connect,$nr_edycji); ?>
+                            <?php echo show_results($db_connect,$nr_edycji, $data_wynikow); ?>
                         </section>
                     </div>
                 <?php 

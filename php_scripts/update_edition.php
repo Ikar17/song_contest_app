@@ -44,7 +44,7 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
     };
 
     //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić zmiany
-    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'";
+    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline' AND NOT Nr_edycji = '$edition_number'";
     $response = $db_connect->query($sql);
     if($response == false){
         $_SESSION['update_edition_error'] = "Błąd bazy danych";

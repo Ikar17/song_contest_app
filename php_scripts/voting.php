@@ -10,19 +10,31 @@
         exit();
     }
 
+    
+    $id_song_first_place = $_POST['first_place'];
+    $id_song_second_place = $_POST['second_place'];
+    $id_song_third_place = $_POST['third_place'];
+    $edition = $_SESSION['voting_edition'];
+    $nickname = $_SESSION['login']['nickname'];
+
+    unset($_POST['first_place']);
+    unset($_POST['second_place']);
+    unset($_POST['third_place']);
+    unset($_SESSION['voting_edition']);
+
+    //walidacja - jedna piosenka == jedno miejsce
+    if($id_song_first_place == $id_song_second_place || $id_song_second_place == $id_song_third_place || $id_song_first_place == $id_song_third_place ){
+        $_SESSION['voting_error'] = "Jednej piosence można przyznać tylko jedno miejsce";
+        header("Location: ../pages/active_edition.php");
+        exit();
+        
+    }
 
     require_once "./db_config.php";
     $db_connect = new mysqli($host, $db_user, $db_password, $db_name);
     if($db_connect->connect_errno != 0){
         echo "Error with database";
     };
-
-
-    $id_song_first_place = $_POST['first_place'];
-    $id_song_second_place = $_POST['second_place'];
-    $id_song_third_place = $_POST['third_place'];
-    $edition = $_SESSION['voting_edition'];
-    $nickname = $_SESSION['login']['nickname'];
 
 
     //pobieram id edycji
@@ -51,11 +63,6 @@
     )";
 
     $db_connect->query($sql);
-
-    unset($_POST['first_place']);
-    unset($_POST['second_place']);
-    unset($_POST['third_place']);
-    unset($_SESSION['voting_edition']);
 
     $db_connect->close();
 
