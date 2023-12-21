@@ -88,13 +88,13 @@ function show_editable_edition($db_connect, $edition_number){
                     '$options'
                 </select></br>
 
-                <label for='participant_deadline'> Termin zgłoszeń <label>
+                <label for='participant_deadline'> Start zgłoszeń </small><label>
                 <input type='datetime-local' name='participant_deadline' id='participant_deadline' value='$participant_deadline'></br>
 
-                <label for='voting_deadline'> Termin głosowania <label>
+                <label for='voting_deadline'> Start głosowania <small>(równoznaczne z zakończeniem przyjmowania zgłoszeń)</small><label>
                 <input type='datetime-local' name='voting_deadline' id='voting_deadline' value='$voting_deadline'></br>
 
-                <label for='result_deadline'> Termin wyników <label>
+                <label for='result_deadline'> Data udostępnienia wyników <small>(równoznaczne z zakończeniem głosowania)</small> <label>
                 <input type='datetime-local' name='result_deadline' id='result_deadline' value='$result_deadline'></br>
         
                 <input type='submit' value='Zaktualizuj edycję'>

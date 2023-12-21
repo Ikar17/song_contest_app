@@ -1,5 +1,7 @@
 <?php 
 
+    session_start();
+
     if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
        || !isset($_POST['result_deadline']) ){
         header("Location: ../pages/admin_panel.php");
@@ -14,9 +16,17 @@
     unset($_POST['voting_deadline']);
     unset($_POST['result_deadline']);
 
-    //walidacja 
+    //walidacja - kolejność: zgłoszenia, głosowanie, wyniki
+    if($participant_deadline >= $voting_deadline || $voting_deadline >= $result_deadline){
+        $_SESSION['add_edition_error'] = "Nie poprawny terminarz. Kolejność terminów: zgłoszenia, głosowanie, wyniki";
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
 
+
+    //walidacja - puste pola
     if($participant_deadline == null || $voting_deadline==null ||  $result_deadline==null){
+        $_SESSION['add_edition_error'] = "Nie wprowadzono wszystkich niezbędnych danych";
         header("Location: ../pages/admin_panel.php");
         exit();
     }
@@ -27,6 +37,24 @@
         echo "Error with database 1";
         exit();
     };
+
+    //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić
+    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'";
+    $response = $db_connect->query($sql);
+    if($response == false){
+        $_SESSION['add_edition_error'] = "Błąd bazy danych";
+        $db_connect->close();
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
+    if($response->num_rows != 0){
+        $row = $response->fetch_assoc();
+        $_SESSION['add_edition_error'] = "Nie dodano edycji. Data głosowania koliduje z datą głosowania w edycji nr: ".$row['Nr_edycji'];
+        $response->close();
+        $db_connect->close();
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
     
 
     //pobieram numer ostatniej edycji

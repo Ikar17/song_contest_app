@@ -77,17 +77,24 @@
         <section class="container">
             <h2 class="headline">Dodaj nową edycję </h2>
             <form action="../php_scripts/add_new_edition.php" method="POST">
-                <label for="participant_deadline"> Termin zgłoszeń <label>
+                <label for="participant_deadline"> Start zgłoszeń <label>
                 <input type="datetime-local" name="participant_deadline" id="participant_deadline"></br>
 
-                <label for="voting_deadline"> Termin głosowania <label>
+                <label for="voting_deadline"> Start głosowania <small>(równoznaczne z zakończeniem przyjmowania zgłoszeń)</small> <label>
                 <input type="datetime-local" name="voting_deadline" id="voting_deadline"></br>
 
-                <label for="result_deadline"> Termin wyników <label>
+                <label for="result_deadline"> Data udostępnienia wyników <small>(równoznaczne z zakończeniem głosowania)</small> <label>
                 <input type="datetime-local" name="result_deadline" id="result_deadline"></br>
                 
                 <input type="submit" value="Dodaj nową edycję">
             </form>
+            <?php
+                if(isset($_SESSION['add_edition_error'])){
+                    $statement = $_SESSION['add_edition_error'];
+                    echo "<span style='color:red'> $statement </span>";
+                    unset($_SESSION['add_edition_error']);
+                }
+            ?>
         </section>
         <section class="container">
             <h2 class="headline">Zaktualizuj edycję </h2>
@@ -108,6 +115,11 @@
                 if(isset($_POST['select_edition'])){
                     echo show_editable_edition($db_connect, $_POST['select_edition']);
                     unset($_POST['select_edition']);
+                }
+                if(isset($_SESSION['update_edition_error'])){
+                    $statement = $_SESSION['update_edition_error'];
+                    echo "<span style='color:red'> $statement </span>";
+                    unset($_SESSION['update_edition_error']);
                 }
             ?>
             </div>
