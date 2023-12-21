@@ -92,7 +92,7 @@ function show_edition($db_connect, $edition_number){
 
     //pobieranie danych o rezultatach
     $html = $html."<div class='subtitle'><h2>Wyniki</h2></div>";
-    $voting = show_results($db_connect, $edition_number);
+    $voting = show_results($db_connect, $edition_number, $results_deadline);
     $html = $html.$voting;
 
     return $html;
