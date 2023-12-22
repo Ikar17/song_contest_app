@@ -5,8 +5,16 @@
         exit();
     }
 
-    if(!isset( $_POST['first_place']) || !isset( $_POST['second_place']) || !isset( $_POST['third_place'])){
+    if(!isset($_POST['first_place']) || !isset( $_POST['second_place']) || !isset( $_POST['third_place'])){
         header("Location: ../pages/active_edition.php");
+        exit();
+    }
+
+    if(isset($_POST['save_voting'])){
+        $_SESSION['first_place'] = $_POST['first_place'];
+        $_SESSION['second_place']  = $_POST['second_place'];
+        $_SESSION['third_place']  = $_POST['third_place'];
+        header("Location: ./cookies_voting.php");
         exit();
     }
 

@@ -117,15 +117,52 @@ function show_voting($db_connect, $nickname, $edition, $voting_starttime, $resul
         return "<h3>Już oddałeś głosy</h3>";
     }
 
+    //sprawdzenie czy są ustawione ciasteczka
+    $save_voting = null;
+    if(isset($_COOKIE['voting'])){
+        $save_voting = json_decode($_COOKIE['voting']);
+    }else{
+        $save_voting = "nie dziala";
+    }
 
     $participants = get_all_participants_without_one_user($db_connect, $edition, $nickname);
-    $options = "";
+    $options_first = "";
     for($i=0; $i<count($participants); $i++){
         $participant = $participants[$i];
         $singer = $participant['singer'];
         $title = $participant['title'];
         $songId = $participant['songId'];
-        $options = $options."<option value=$songId>".$singer." - ".$title."</option>";
+        if($save_voting != null && ($save_voting->first_place == $songId)){
+            $options_first = $options_first."<option selected='selected' value=$songId >".$singer." - ".$title."</option>";
+        }else{
+            $options_first = $options_first."<option value=$songId>".$singer." - ".$title."</option>";
+        }
+    }
+
+    $options_second = "";
+    for($i=0; $i<count($participants); $i++){
+        $participant = $participants[$i];
+        $singer = $participant['singer'];
+        $title = $participant['title'];
+        $songId = $participant['songId'];
+        if($save_voting != null && ($save_voting->second_place == $songId)){
+            $options_second = $options_second."<option selected='selected' value=$songId>".$singer." - ".$title."</option>";
+        }else{
+            $options_second = $options_second."<option value=$songId>".$singer." - ".$title."</option>";
+        }
+    }
+
+    $options_third = "";
+    for($i=0; $i<count($participants); $i++){
+        $participant = $participants[$i];
+        $singer = $participant['singer'];
+        $title = $participant['title'];
+        $songId = $participant['songId'];
+        if($save_voting != null && ($save_voting->third_place == $songId)){
+            $options_third = $options_third."<option selected='selected' value=$songId>".$singer." - ".$title."</option>";
+        }else{
+            $options_third = $options_third."<option value=$songId>".$singer." - ".$title."</option>";
+        }
     }
 
     $_SESSION['voting_edition'] = $edition;
@@ -134,17 +171,18 @@ function show_voting($db_connect, $nickname, $edition, $voting_starttime, $resul
     <form method='POST' action='../php_scripts/voting.php'>
         <label for='first_place'>1 miejsce </label>
         <select id='first_place' name='first_place'>
-            $options
+            $options_first
         </select>
         <label for='second_place'>2 miejsce </label>
         <select id='second_place' name='second_place' >
-            $options
+            $options_second
         </select>
         <label for='third_place'>3 miejsce </label>
         <select id='third_place' name='third_place'>
-            $options
+            $options_third
         </select>
-        <input type='submit' value='Zagłosuj'>
+        <input type='submit' name='save_voting' value='Zapisz'>
+        <input type='submit' name='send_voting' value='Zagłosuj'>
     </form>";
 }
 
