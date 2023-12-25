@@ -55,17 +55,17 @@ function show_edition($db_connect, $edition_number){
 
     $row = $response->fetch_assoc();
     $response->close();
-    $participant_deadline = $row['Zgloszenia'];
-    $voting_deadline = $row['Glosowanie'];
-    $results_deadline = $row['Wyniki'];
+    $participant_deadline = new DateTime($row['Zgloszenia']);
+    $voting_deadline = new DateTime($row['Glosowanie']);
+    $results_deadline = new DateTime($row['Wyniki']);
 
     $html = $html."<div class='subtitle'><h2>Terminarz</h2></div>";
 
     $html = $html."
         <div>
-            <p>Termin zgłoszeń: $participant_deadline </p>
-            <p>Termin głosowania: $voting_deadline</p>
-            <p>Termin wyników: $results_deadline</p>
+            <p>Termin zgłoszeń:".$participant_deadline->format('d-m-Y H:i')."</p>
+            <p>Termin głosowania:".$voting_deadline->format('d-m-Y H:i')."</p>
+            <p>Termin wyników:".$results_deadline->format('d-m-Y H:i')."</p>
         </div>
         ";
 

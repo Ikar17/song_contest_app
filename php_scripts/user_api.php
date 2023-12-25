@@ -97,11 +97,11 @@ function does_user_voting($db_connect, $nickname, $edition){
 
 function show_voting($db_connect, $nickname, $edition, $voting_starttime, $results_time){
     //sprawdzenie czy aktualnie jest czas głosowania
-    if(date('Y-m-d H:i:s') < $voting_starttime){
+    if(date('Y-m-d H:i:s') < $voting_starttime->format('Y-m-d H:i:s')){
         return "<h3>Głosowanie ruszy po zakończeniu przyjmowania zgłoszeń</h3>";
     }
 
-    if(date('Y-m-d H:i:s') >= $results_time){
+    if(date('Y-m-d H:i:s') >= $results_time->format('Y-m-d H:i:s')){
         return "<h3>Głosowanie zostało zakończone</h3>";
     }
 
@@ -121,10 +121,8 @@ function show_voting($db_connect, $nickname, $edition, $voting_starttime, $resul
     $save_voting = null;
     if(isset($_COOKIE['voting'])){
         $save_voting = json_decode($_COOKIE['voting']);
-    }else{
-        $save_voting = "nie dziala";
     }
-
+    
     $participants = get_all_participants_without_one_user($db_connect, $edition, $nickname);
     $options_first = "";
     for($i=0; $i<count($participants); $i++){
@@ -189,7 +187,7 @@ function show_voting($db_connect, $nickname, $edition, $voting_starttime, $resul
 
 function show_results($db_connect, $edition, $results_time){
 
-    if(date('Y-m-d H:i:s') < $results_time){
+    if(date('Y-m-d H:i:s') < $results_time->format('Y-m-d H:i:s')){
         return "<h3>Wyniki zostaną opublikowane po zakończeniu głosowania</h3>";
     }
 
@@ -266,11 +264,30 @@ function show_results($db_connect, $edition, $results_time){
     $position = 1;
     $html = "";
     foreach($songs_results_arrray as $key => $value){
-        $html = $html."<p><strong>".$position." miejsce: </strong>".$value[1]." - ".$value[2].". <strong>Liczba punktów:</strong> ".$value[0]."</p>";
+        $order = $position;
+
+        if($position == 1) $order = "<img src='../assets/gold_medal.png' alt='first place icon' />";
+        else if($position == 2) $order = "<img src='../assets/silver_medal.png' alt='second place icon'  />";
+        else if($position == 3) $order = "<img src='../assets/bronze_medal.png' alt='third place icon'  />";
+
+        $html = $html.
+                    "<tr>
+                        <td>$order</td>
+                        <td>".$value[1]." - ".$value[2]."</td>
+                        <td>".$value[0]."</td>
+                    </tr>";
+                    
         $position++;
     }
 
-    return "<div>".$html."</div>";
+    return "<table>
+                <tr>
+                    <th>Miejsce</th>
+                    <th>Piosenka</th>
+                    <th>Liczba punktów </th>
+                </tr>"
+                .$html
+            ."</table>";
 
 }
 

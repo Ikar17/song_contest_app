@@ -23,9 +23,6 @@
 
     $result = $db_connect->query($sql);
     if($result == false || $result->num_rows == 0){
-        unset($_POST['author']);
-        unset($_POST['songTitle']);
-        unset($_POST['songUrl']);
         header('Location: ../pages/active_edition.php');
         exit();
     }
@@ -40,9 +37,6 @@
 
     $result = $db_connect->query($sql);
     if($result == false || $result->num_rows == 0){
-        unset($_POST['author']);
-        unset($_POST['songTitle']);
-        unset($_POST['songUrl']);
         header('Location: ../pages/active_edition.php');
         exit();
     }
@@ -51,12 +45,22 @@
     $edition_id = $row['Id'];
     $result->close();
     
+    //sprawdzanie czy dana piosenka wystepuje juz w bazie
+    $singer = trim($_POST['author']);
+    $title = trim($_POST['songTitle']);
+    $link = trim($_POST['songUrl']);
+
+    $sql = "SELECT * FROM piosenki WHERE Wykonawca = '$singer' AND Tytul='$title'";
+    $response = $db_connect->query($sql);
+    if($response && $response->num_rows > 0){
+        $response->close();
+        $_SESSION["add_participant_error"] = "Dana piosenka już brała udział";
+        header('Location: ../pages/active_edition.php');
+        exit();
+    }
+    $response->close();
 
     //wstawianie nowej piosenki
-    $singer = $_POST['author'];
-    $title = $_POST['songTitle'];
-    $link = $_POST['songUrl'];
-
     $sql = "INSERT INTO piosenki (Wykonawca, TytuL, Link, Id_uzytkownika, Id_edycji) 
             VALUES('$singer', '$title', '$link', '$user_id', '$edition_id')";
 
@@ -64,15 +68,6 @@
 
     $db_connect->close();
 
-    echo $res;
-    if($res == false){
-        echo "blaad";
-    }
-    exit();
-
-    unset($_POST['author']);
-    unset($_POST['songTitle']);
-    unset($_POST['songUrl']);
     header('Location: ../pages/active_edition.php');
 
 ?>

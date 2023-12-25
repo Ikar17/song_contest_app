@@ -91,9 +91,9 @@
                     //pobieranie informacji o edycji
                     $row = $result->fetch_assoc();
                     $nr_edycji = $row['Nr_edycji'];
-                    $data_zgloszen = $row['Zgloszenia'];
-                    $data_glosowania = $row['Glosowanie'];
-                    $data_wynikow = $row['Wyniki'];
+                    $data_zgloszen = new DateTime($row['Zgloszenia']);
+                    $data_glosowania = new DateTime($row['Glosowanie']);
+                    $data_wynikow = new DateTime($row['Wyniki']);
                     $_SESSION['edition'] = $nr_edycji;
 
                 ?>
@@ -102,19 +102,36 @@
 
                         <div class="line"></div>
 
-                        <div class="subtitle"><h2>Terminarz</h2></div>
+                        <div class="subtitle">
+                            <img src="../assets/calendar.png" alt="calendar icon" />
+                            <h2>Terminarz</h2>
+                        </div>
                         <section class="schedule">
-                            <p>Start zgłoszeń: <?php echo $data_zgloszen?> </p>
-                            <p>Start głosowania: <?php echo $data_glosowania?></p>
-                            <p>Wyniki: <?php echo $data_wynikow?></p>
+                            <table>
+                                <tr>
+                                    <th>Start zgłoszeń:</th>
+                                    <td><?php echo $data_zgloszen->format('d-m-Y H:i')?></td>
+                                </tr>
+                                <tr>
+                                    <th>Start głosowania:</th>
+                                    <td><?php echo $data_glosowania->format('d-m-Y H:i')?></td>
+                                </tr>
+                                <tr>
+                                    <th>Wyniki:</th>
+                                    <td><?php echo $data_wynikow->format('d-m-Y H:i')?></td>
+                                </tr>
+                            </table>
                         </section>
 
                         <div class="line"></div>
 
-                        <div class="subtitle"><h2>Zgłoszenia</h2></div>
+                        <div class="subtitle">
+                            <img src="../assets/join.png" alt="join to contest icon" />
+                            <h2>Zgłoszenia</h2>
+                        </div>
                         <section class="participation_form"> 
                             <?php 
-                            if(date('Y-m-d H:i:s') >= $data_glosowania){
+                            if(date('Y-m-d H:i:s') >= $data_glosowania->format('Y-m-d H:i:s')){
                                 echo "<h3>Przyjmowanie zgłoszeń zostało zamknięte</h3>";
                             }
                             else if(does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
@@ -132,37 +149,61 @@
                                     <input type="submit" value="Dodaj zgłoszenie" >
                                 </form>
                                 ENDL;
+
+                                if(isset($_SESSION["add_participant_error"])){
+                                    $statement = $_SESSION["add_participant_error"];
+                                    echo "<span style='color:red'> $statement </span>";
+                                    unset($_SESSION["add_participant_error"]);
+                                }
                             }
                             ?>
                             
                         </section>
 
                         <section class="participants">
-                            <?php
-                                $participants = get_all_participants($db_connect,$nr_edycji);
-                                for($x = 0; $x < count($participants); $x++){
-                                    $participant = $participants[$x];
-                                    $nickname = $participant['nickname'];
-                                    $singer = $participant['singer'];
-                                    $title = $participant['title'];
-                                    $link = $participant['link'];
+                            <table>
+                                <tr>
+                                    <th> L.p </th>
+                                    <th>Użytkownik</th>
+                                    <th>Wykonawca</th>
+                                    <th>Tytuł</th>
+                                    <th>Link</th>
+                                </tr>
+                                <?php
+                                    $participants = get_all_participants($db_connect,$nr_edycji);
+                                    for($x = 0; $x < count($participants); $x++){
+                                        $participant = $participants[$x];
+                                        $nickname = $participant['nickname'];
+                                        $singer = $participant['singer'];
+                                        $title = $participant['title'];
+                                        $link = $participant['link'];
 
-                                    echo<<< ENDL
-                                    <div class="participant">
-                                        <p>$nickname</p>
-                                        <p>$singer</p>
-                                        <p>$title</p>
-                                        <a href="$link">Posłuchaj</a>
-                                    </div>
-                                    ENDL;
-                                }
-                            ?>
-
+                                        $ordinal_number = $x + 1;
+                                        echo<<< ENDL
+                                        <tr>
+                                            <td>$ordinal_number</td>
+                                            <td>$nickname</td>
+                                            <td>$singer</td>
+                                            <td>$title</td>
+                                            <td>
+                                                <a href="$link">
+                                                    <img src="../assets/youtube.png"/>
+                                                    Posłuchaj
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        ENDL;
+                                    }
+                                ?>
+                            </table>
                         </section>
 
                         <div class="line"></div>
 
-                        <div class="subtitle"><h2>Głosowanie</h2></div>
+                        <div class="subtitle">
+                            <img src="../assets/vote.png" alt="voting icon" />
+                            <h2>Głosowanie</h2>
+                        </div>
                         <section class="voting">
                             <?php echo show_voting($db_connect, $_SESSION['login']['nickname'], $nr_edycji, $data_glosowania,$data_wynikow); 
                                   
@@ -177,7 +218,11 @@
 
                         <div class="line"></div>
 
-                        <div class="subtitle"><h2>Wyniki</h2></div>
+                        <div class="subtitle">
+                            <img src="../assets/ranking_c.png" alt="results icon" />
+                            <h2>Wyniki</h2>
+                        </div>
+
                         <section class="results">
                             <?php echo show_results($db_connect,$nr_edycji, $data_wynikow); ?>
                         </section>
