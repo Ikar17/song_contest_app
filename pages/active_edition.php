@@ -137,6 +137,9 @@
                             else if(does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
                                 echo "<h3>Zgłosiłeś już swoją propozycję</h3>";
                             }
+                            else if(date('Y-m-d H:i:s') < $data_zgloszen->format('Y-m-d H:i:s')){
+                                echo "<h3>Zgłoszenia nie są jeszcze otwarte</h3>";
+                            }
                             else{
                                 echo<<<ENDL
                                 <form method="POST" action="../php_scripts/add_participant.php">

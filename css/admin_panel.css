@@ -1,12 +1,73 @@
+main{
+    background-image: url("../assets/active_edition_background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px 0px;
+}
+
 .headline{
     display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: 20px 0;
+    height: 40px;
+    gap: 10px;
+    background-color: #BBB5BD; /* rgba(0, 0, 0, 0.15);*/
+    padding: 8px;
 }
 
 form input, select{
-    height: 40px;
-    margin: 10px 0px;
+    height: 45px;
     font-size: 130%;
+}
+
+table{
+    width: 100%;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 5px 5px;
+}
+
+th{
+    padding-left: 15px;
+    background-color: white;
+}
+
+input[type=submit]{
+    min-width: 100px;
+    min-height: 45px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #0055ff;;
+    outline: none;
+    border: 1px solid transparent;
+    color: white;
+    font-size: 100%;
+    transition: 0.5s;
+}
+
+input[type=submit]:hover {
+    background: #0055dd;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.edit_edition_headline{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #dee2ff;
+    padding: 5px;
+}
+
+.error{
+    font-weight: bold;
+    color: red;
+    padding: 10px 0;
+}
+
+.add_edition{
+    margin-bottom: 20px;
+}
+
+
+.update_edition_search{
+    margin-top: 20px;
 }

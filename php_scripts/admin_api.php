@@ -80,24 +80,34 @@ function show_editable_edition($db_connect, $edition_number){
     $_SESSION['update_edition_number'] = $edition_number;
 
     return "
-            <h3> Aktualizacja edycji nr: $edition_number </h3>
+            <h2 class='edit_edition_headline'> Aktualizacja edycji nr: $edition_number </h2>
             <br>
             <form method='POST' action='../php_scripts/update_edition.php'>
-                <label for='status'>Status edycji:</label>
-                <select id='status' name='status'>
-                    '$options'
-                </select></br>
-
-                <label for='participant_deadline'> Start zgłoszeń </small><label>
-                <input type='datetime-local' name='participant_deadline' id='participant_deadline' value='$participant_deadline'></br>
-
-                <label for='voting_deadline'> Start głosowania <small>(równoznaczne z zakończeniem przyjmowania zgłoszeń)</small><label>
-                <input type='datetime-local' name='voting_deadline' id='voting_deadline' value='$voting_deadline'></br>
-
-                <label for='result_deadline'> Data udostępnienia wyników <small>(równoznaczne z zakończeniem głosowania)</small> <label>
-                <input type='datetime-local' name='result_deadline' id='result_deadline' value='$result_deadline'></br>
-        
-                <input type='submit' value='Zaktualizuj edycję'>
+                <table>
+                    <tr>
+                        <th>Status edycji:</th>
+                        <td>
+                            <select id='status' name='status'>
+                                '$options'
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Start zgłoszeń:</th>
+                        <td><input type='datetime-local' name='participant_deadline' id='participant_deadline' value='$participant_deadline'></td>
+                    </tr>
+                    <tr>
+                        <th>Start głosowania <small>(równoznaczne z zakończeniem przyjmowania zgłoszeń):</small></th>
+                        <td><input type='datetime-local' name='voting_deadline' id='voting_deadline' value='$voting_deadline'></td>
+                    </tr>
+                    <tr>
+                        <th>Data udostępnienia wyników <small>(równoznaczne z zakończeniem głosowania):</small></th>
+                        <td><input type='datetime-local' name='result_deadline' id='result_deadline' value='$result_deadline'></td>
+                    </tr>
+                    <tr>
+                        <td><input type='submit' value='Zaktualizuj edycję'></td>
+                    </tr>
+                </table>
             </form>";
 
 }

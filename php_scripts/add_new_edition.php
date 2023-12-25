@@ -18,7 +18,7 @@
 
     //walidacja - kolejność: zgłoszenia, głosowanie, wyniki
     if($participant_deadline >= $voting_deadline || $voting_deadline >= $result_deadline){
-        $_SESSION['add_edition_error'] = "Nie poprawny terminarz. Kolejność terminów: zgłoszenia, głosowanie, wyniki";
+        $_SESSION['add_edition_error'] = "Niepoprawny terminarz. Kolejność terminów: zgłoszenia, głosowanie, wyniki";
         header("Location: ../pages/admin_panel.php");
         exit();
     }

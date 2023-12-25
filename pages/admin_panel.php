@@ -74,31 +74,46 @@
     </section>
 
     <main>
-        <section class="container">
-            <h2 class="headline">Dodaj nową edycję </h2>
+        <section class="container add_edition">
+            <div class="headline">
+                <img src="../assets/add-button.png" alt="add edition icon"/>
+                <h2>Dodaj nową edycję </h2>
+            </div>
+            
             <form action="../php_scripts/add_new_edition.php" method="POST">
-                <label for="participant_deadline"> Start zgłoszeń <label>
-                <input type="datetime-local" name="participant_deadline" id="participant_deadline"></br>
-
-                <label for="voting_deadline"> Start głosowania <small>(równoznaczne z zakończeniem przyjmowania zgłoszeń)</small> <label>
-                <input type="datetime-local" name="voting_deadline" id="voting_deadline"></br>
-
-                <label for="result_deadline"> Data udostępnienia wyników <small>(równoznaczne z zakończeniem głosowania)</small> <label>
-                <input type="datetime-local" name="result_deadline" id="result_deadline"></br>
+                <table>
+                    <tr>
+                        <th>Start zgłoszeń</th>
+                        <td><input type="datetime-local" name="participant_deadline" id="participant_deadline"></td>
+                    </tr>
+                    <tr>
+                        <th>Start głosowania <small>(równoznaczne z zakończeniem przyjmowania zgłoszeń)</small></th>
+                        <td><input type="datetime-local" name="voting_deadline" id="voting_deadline"> </td>
+                    </tr>
+                    <tr>
+                        <th>Data udostępnienia wyników <small>(równoznaczne z zakończeniem głosowania)</small></th>
+                        <td><input type="datetime-local" name="result_deadline" id="result_deadline"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Dodaj nową edycję"></td>
+                    </tr>
+                </table>
                 
-                <input type="submit" value="Dodaj nową edycję">
             </form>
             <?php
                 if(isset($_SESSION['add_edition_error'])){
                     $statement = $_SESSION['add_edition_error'];
-                    echo "<span style='color:red'> $statement </span>";
+                    echo "<div class='error'><p> $statement </p></div>";
                     unset($_SESSION['add_edition_error']);
                 }
             ?>
         </section>
-        <section class="container">
-            <h2 class="headline">Zaktualizuj edycję </h2>
-            <div>
+        <section class="container update_edition">
+            <div class="headline">
+                <img src="../assets/edit.png" alt="edit edition icon"/>
+                <h2>Zaktualizuj edycję </h2>
+            </div>
+            <div class="update_edition_search">
                 <form method="POST" action="./admin_panel.php">
                     <label for="select_edition">Wybierz edycję: </label>
                     <select id="select_edition" name="select_edition">
@@ -118,7 +133,7 @@
                 }
                 if(isset($_SESSION['update_edition_error'])){
                     $statement = $_SESSION['update_edition_error'];
-                    echo "<span style='color:red'> $statement </span>";
+                    echo "<div class='error'><p> $statement </p></div>";
                     unset($_SESSION['update_edition_error']);
                 }
             ?>
