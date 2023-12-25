@@ -43,7 +43,7 @@ function show_edition($db_connect, $edition_number){
     require_once "../php_scripts/user_api.php";
 
 
-    $html = "<div><h1>Edycja nr $edition_number </h1></div>";
+    $html = "<div class='edition_archive_headline'><h1>Edycja nr $edition_number </h1></div>";
 
     #pobieranie informacji o terminarzu
     $sql = "SELECT * FROM edycje WHERE Nr_edycji = '$edition_number'";
@@ -59,19 +59,44 @@ function show_edition($db_connect, $edition_number){
     $voting_deadline = new DateTime($row['Glosowanie']);
     $results_deadline = new DateTime($row['Wyniki']);
 
-    $html = $html."<div class='subtitle'><h2>Terminarz</h2></div>";
+    $html = $html."<div class='subtitle'>
+                        <img src='../assets/calendar.png' alt='calendar icon' />
+                        <h2>Terminarz</h2>
+                  </div>";
 
     $html = $html."
-        <div>
-            <p>Termin zgłoszeń:".$participant_deadline->format('d-m-Y H:i')."</p>
-            <p>Termin głosowania:".$voting_deadline->format('d-m-Y H:i')."</p>
-            <p>Termin wyników:".$results_deadline->format('d-m-Y H:i')."</p>
-        </div>
+        <table class='calendar'>
+            <tr>
+                <th>Start zgłoszeń:</th>
+                <td>".$participant_deadline->format('d-m-Y H:i')."</td>
+            </tr>
+            <tr>
+                <th>Start głosowania:</th>
+                <td>".$voting_deadline->format('d-m-Y H:i')."</td>
+            </tr>
+            <tr>
+                <th>Wyniki:</th>
+                <td>".$results_deadline->format('d-m-Y H:i')."</td>
+            </tr>
+        </table>
         ";
 
     #pobieranie danych o piosenkach biorących udział
     $participants = get_all_participants($db_connect, $edition_number);
-    $html = $html."<div class='subtitle'><h2>Zgłoszenia</h2></div>";
+    $html = $html."<div class='subtitle'>
+                        <img src='../assets/list.png' alt='list icon' />
+                        <h2>Zgłoszenia</h2>
+                    </div>";
+
+    $html = $html."<table>
+                        <tr>
+                            <th> L.p </th>
+                            <th>Użytkownik</th>
+                            <th>Wykonawca</th>
+                            <th>Tytuł</th>
+                            <th>Link</th>
+                        </tr>";
+
     for($x = 0; $x < count($participants); $x++){
         $participant = $participants[$x];
         $nickname = $participant['nickname'];
@@ -79,21 +104,31 @@ function show_edition($db_connect, $edition_number){
         $title = $participant['title'];
         $link = $participant['link'];
 
+        $order = $x + 1;
         $html = $html."
-        <div class='participant'>
-            <p>$nickname</p>
-            <p>$singer</p>
-            <p>$title</p>
-            <a href='$link'>Posłuchaj</a>
-        </div>
+        <tr>
+            <td>$order</td>
+            <td>$nickname</td>
+            <td>$singer</td>
+            <td>$title</td>
+            <td>
+                <a href='$link'>
+                    <img src='../assets/youtube.png'/>
+                    Posłuchaj
+                </a>
+            </td>
+        </tr>
         ";
-
     }
+    $html = $html."</table>";
 
     //pobieranie danych o rezultatach
-    $html = $html."<div class='subtitle'><h2>Wyniki</h2></div>";
+    $html = $html."<div class='subtitle'>
+                        <img src='../assets/ranking_c.png' alt='results icon' />
+                        <h2>Wyniki</h2>
+                   </div>";
     $voting = show_results($db_connect, $edition_number, $results_deadline);
-    $html = $html.$voting;
+    $html = $html."<div class='voting_results'>".$voting."</div>";
 
     return $html;
 }

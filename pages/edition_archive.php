@@ -74,23 +74,25 @@
         </div>      
     </section>
 
-    <main class="container">
-        <div>
-            <form method="POST" action="./edition_archive.php">
-                <label for="select_edition">Wybierz edycję: </label>
-                <select id="select_edition" name="select_edition_archive">
-                    <?php echo show_editions_options($db_connect); ?>
-                </select>
-                <input type="submit" value="Potwierdź">
-            </form>
-        </div>
-        <div class="edition_search_results">
-            <?php 
-                if(isset($_POST['select_edition_archive'])){
-                    echo show_edition($db_connect, $_POST['select_edition_archive']);
-                    unset($_POST['select_edition_archive']);
-                }
-            ?>                  
+    <main>
+        <div class="container">
+            <div>
+                <form method="POST" action="./edition_archive.php">
+                    <label for="select_edition">Wybierz edycję: </label>
+                    <select id="select_edition" name="select_edition_archive">
+                        <?php echo show_editions_options($db_connect); ?>
+                    </select>
+                    <input type="submit" value="Potwierdź">
+                </form>
+            </div>
+            <div class="edition_search_results">
+                <?php 
+                    if(isset($_POST['select_edition_archive'])){
+                        echo show_edition($db_connect, $_POST['select_edition_archive']);
+                        unset($_POST['select_edition_archive']);
+                    }
+                ?>                  
+            </div>
         </div>
     </main>
     <footer>

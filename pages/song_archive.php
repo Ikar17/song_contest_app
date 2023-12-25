@@ -74,22 +74,23 @@
         </div>      
     </section>
 
-    <main class="container">
-        <div id="searchSongForm">
-            <div>
-                <label for="searchSongBySinger">Wyszukaj po wykonawcy: </label>
-                <input id="searchSongBySinger" type="text">
+    <main>
+        <div class="container">
+            <div id="searchSongForm">
+                <div>
+                    <label for="searchSongBySinger">Wyszukaj po wykonawcy: </label>
+                    <input id="searchSongBySinger" type="text">
+                </div>
+                <div>                  
+                    <label for="searchSongByTitle">Wyszukaj po tytule: </label>
+                    <input id="searchSongByTitle" type="text">
+                </div>
             </div>
-            <div>                  
-                <label for="searchSongByTitle">Wyszukaj po tytule: </label>
-                <input id="searchSongByTitle" type="text">
-            </div>
-        </div>
-        <div class="line"></div>
-        <div id="searchSongsResults">
+            <div class="line"></div>
+            <div id="searchSongsResults">
 
+            </div>
         </div>
-        
     </main>
     <footer>
 
