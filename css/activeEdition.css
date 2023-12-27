@@ -154,3 +154,21 @@ tr{
   line-height: 10px;
 }
 
+input[type=submit]{
+  min-width: 100px;
+  min-height: 45px;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #0055ff;;
+  outline: none;
+  border: 1px solid transparent;
+  color: white;
+  font-size: 100%;
+  transition: 0.5s;
+}
+
+input[type=submit]:hover {
+  background: #0055dd;
+  transition: 0.5s;
+  cursor: pointer;
+}
