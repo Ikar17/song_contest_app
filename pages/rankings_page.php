@@ -74,8 +74,10 @@
         </div>      
     </section>
 
-    <main class="container container_ranking">
-        <?php show_users_ranking($db_connect); ?>
+    <main>
+        <div class="container container_ranking">
+            <?php echo show_users_ranking($db_connect); ?>
+        </div>
     </main>
     <footer>
 

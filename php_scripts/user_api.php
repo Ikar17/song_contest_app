@@ -312,56 +312,48 @@ function get_all_users($db_connect){
 
 
 function show_users_ranking($db_connect){
+    //pobieranie wszystkich użytkowników
     $users = get_all_users($db_connect);
     if(count($users) == 0) return "";
 
     //tworzenie tablicy rezultatow
-    $results = [];
+    $user_results = [];
     foreach ($users as $user) {
-        $results[$user['Id']] = array("user" => $user, "points" => 0);
+        $user_results[$user['Id']] = array("user" => $user, "points" => 0);
     } 
 
-    //pobieranie wszystkich rezultatow
-    $sql = "SELECT * FROM głosowanie";
+    //pobieranie wszystkich zakończonych edycji
+    $current_datetime = date("Y-m-d H:i:s");
+    $sql = "SELECT Nr_edycji FROM edycje WHERE Wyniki <= '$current_datetime'";
     $response = $db_connect->query($sql);
-    if($response == false || $response->num_rows==0) return "";
+    if($response == false) return "Błąd bazy danych";
+    if($response->num_rows==0){
+        $response->close();
+        return "Brak danych";
+    }
 
-    //uzupełnienie tablicy rezultatow
-    for($i=0; $i<$response->num_rows; $i++){
-        $voting = $response->fetch_assoc();
-        //pierwsze miejsce - 5pkt
-        $first_place_song_id = $voting['Id_piosenki_1'];
-        $user_id = get_user_id_from_song_id($db_connect, $first_place_song_id);
-        if($user_id == -1){
-            $response->close();
-            return "";
+    //pobieranie rezultatow dla kazdej edycji i tworzenie rezultatow uzytkownikow
+    for($i = 0; $i < $response->num_rows; $i++){
+        $row = $response->fetch_assoc();
+        $edition_number = $row['Nr_edycji'];
+
+        $song_results = get_top_results_of_edition($db_connect, $edition_number);
+
+        $index = 1;
+        foreach($song_results as $result){
+            $user_id = $result['song']['Id_uzytkownika'];
+            if($index == 1) $user_results[$user_id]["points"] += 5;
+            else if($index == 2) $user_results[$user_id]["points"] += 3;
+            else if($index == 3) $user_results[$user_id]["points"] += 1;
+
+            $index++;
         }
-        $results[$user_id]['points'] += 5; 
-
-        //drugie miejsce - 3pkt
-        $second_place_song_id = $voting['Id_piosenki_2'];
-        $user_id = get_user_id_from_song_id($db_connect, $second_place_song_id);
-        if($user_id == -1){
-            $response->close();
-            return "";
-        }
-        $results[$user_id]['points'] += 3; 
-
-        //trzecie miejsce - 1pkt
-        $third_place_song_id = $voting['Id_piosenki_3'];
-        $user_id = get_user_id_from_song_id($db_connect, $third_place_song_id);
-        if($user_id == -1){
-            $response->close();
-            return "";
-        }
-        $results[$user_id]['points'] += 1; 
-
     }
 
     $response->close();
 
     //sortowanie miejsc
-    usort($results,'compare_users');
+    usort($user_results,'compare_users');
 
 
     //tworzenie widoku
@@ -374,23 +366,29 @@ function show_users_ranking($db_connect){
             </tr>
         ";
 
-    $place = 1;
-    foreach($results as $result){
+    $order = 1;
+    foreach($user_results as $result){
         $user_name = $result['user']['Nickname'];
         $user_points = $result['points'];
+
+        if($order == 1) $place = "<img src='../assets/gold_medal.png' alt='first place icon' />";
+        else if($order == 2) $place = "<img src='../assets/silver_medal.png' alt='second place icon'  />";
+        else if($order == 3) $place = "<img src='../assets/bronze_medal.png' alt='third place icon'  />";
+        else $place = $order;
+
         $html = $html."
-            <tr class='place_$place'>
+            <tr>
                 <td>$place</td>
                 <td>$user_name</td>
                 <td>$user_points</td>
             </tr>
         ";
-        $place += 1;
+        $order += 1;
     }
 
     $html = $html."</table>";
 
-    echo $html;
+    return $html;
 
 }
 
@@ -409,5 +407,108 @@ function get_user_id_from_song_id($db_connect, $song_id){
 function compare_users($first_user, $second_user){
     return $first_user['points'] < $second_user['points'];
 }
+
+function get_top_results_of_edition($db_connect, $edition){
+    //pobieram rezultaty
+    $sql = "SELECT * FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id WHERE edycje.Nr_Edycji = '$edition'";
+    $response = $db_connect->query($sql);
+    if($response == false) return [];
+    if($response->num_rows == 0){
+        $response->close();
+        return [];
+    }
+
+    //pobranie listy piosenek bioracych udzial w edycji
+    $sql = "SELECT DISTINCT piosenki.* FROM piosenki JOIN edycje ON piosenki.id_edycji = edycje.id WHERE edycje.Nr_edycji ='$edition'";
+    $response = $db_connect->query($sql);
+    if($response == false) return [];
+    if($response->num_rows == 0){
+        $response->close();
+        return [];
+    }
+
+    $songs_results = [];
+    for($i=0; $i<$response->num_rows; $i++){
+        $row = $response->fetch_assoc();
+        $id = $row['Id'];
+        $songs_results["$id"] = array("song" => $row , "result" => 0);
+    }
+    $response->close();
+    
+    
+    //pobranie wynikow glosowania - pierwsze miejsca
+     $sql = "SELECT Id_piosenki_1, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
+                WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_1";
+    
+    $response = $db_connect->query($sql);
+    if($response == false) return [];
+    if($response->num_rows == 0){
+        $response->close();
+        return [];
+    }
+
+    for($i=0; $i<$response->num_rows; $i++){
+        $row = $response->fetch_assoc();
+        $id = $row['Id_piosenki_1'];
+        $how_many = $row['how_many'];
+        $scores = $how_many * 5;
+    
+        $songs_results["$id"]["result"] += $scores;
+    }   
+    $response->close();
+        
+    //pobranie wynikow glosowania - drugie miejsce
+    $sql = "SELECT Id_piosenki_2, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
+                WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_2";
+    
+    $response = $db_connect->query($sql);
+    if($response == false) return [];
+    if($response->num_rows == 0){
+        $response->close();
+        return [];
+    }
+
+    for($i=0; $i<$response->num_rows; $i++){
+        $row = $response->fetch_assoc();
+        $id = $row['Id_piosenki_2'];
+        $how_many = $row['how_many'];
+        $scores = $how_many * 3;
+    
+        $songs_results["$id"]["result"] += $scores;
+    }   
+    $response->close(); 
+    
+    //pobranie wynikow glosowania - trzecie miejsce
+    $sql = "SELECT Id_piosenki_3, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
+                WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_3";
+    
+    $response = $db_connect->query($sql);
+    if($response == false) return [];
+    if($response->num_rows == 0){
+        $response->close();
+        return [];
+    }
+
+    for($i=0; $i<$response->num_rows; $i++){
+        $row = $response->fetch_assoc();
+        $id = $row['Id_piosenki_3'];
+        $how_many = $row['how_many'];
+        $scores = $how_many * 1;
+    
+        $songs_results["$id"]["result"] += $scores;
+    }   
+    $response->close(); 
+    
+    //sortowanie rezultatow
+    usort($songs_results,'compare_songs_results');
+
+    return $songs_results;
+
+}
+
+function compare_songs_results($first, $second){
+    return $first['result'] < $second['result'];
+}
+
 
 ?>

@@ -1,3 +1,9 @@
+main{
+    background-image: url("../assets/active_edition_background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .container_ranking{
     display: flex;
     width: 100%;
@@ -6,26 +12,20 @@
 }
 
 table{
-    width: 50%;
-    margin: 40px 0px;
-}
-
-table, th, td {
-    border:1px solid black;
+    width: 70%;
+    border-collapse: separate;
+    border-spacing: 5px 15px;
 }
 
 th, td{
     text-align: center;
 }
-
-.place_1{
-    background-color: yellow;
+  
+tr{
+    background-color: white;
+    height: 45px;
 }
 
-.place_2{
-    background-color: gray;
-}
-
-.place_3{
-    background-color: brown;
-}
+tr:nth-child(1){
+    background-color: #dee2ff;
+  }
