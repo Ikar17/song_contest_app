@@ -1,0 +1,19 @@
+main{
+    min-height: 45vh;
+    background-image: url("../assets/active_edition_background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+main > div{
+    text-align: justify;
+    padding: 20px 0;
+}
+
+p{
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 15px 10px;
+    gap: 15px;
+}

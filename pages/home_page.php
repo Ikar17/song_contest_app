@@ -65,10 +65,12 @@
                     <div class="note note-down"></div>
                 </header>
                 <div class="tiles">
-                    <div class="tile">
-                        <img src="../assets/rules_white.png" />
-                        <h3>Regulamin</h3>
-                    </div>
+                    <a href="./rules_page.php">
+                        <div class="tile">
+                            <img src="../assets/rules_white.png" />
+                            <h3>Regulamin</h3>
+                        </div>
+                    </a>
                     <a href="./active_edition.php">
                         <div class="tile">
                             <img src="../assets/player_white.png" />
