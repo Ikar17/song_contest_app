@@ -38,8 +38,12 @@
         exit();
     };
 
-    //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić
-    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'";
+    //walidacja, sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić
+    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'
+            UNION
+            SELECT * FROM edycje WHERE Glosowanie <= '$result_deadline' AND Wyniki >= '$result_deadline'
+            UNION
+            SELECT * FROM edycje WHERE Glosowanie <= '$participant_deadline' AND Wyniki >= '$participant_deadline'";
     $response = $db_connect->query($sql);
     if($response == false){
         $_SESSION['add_edition_error'] = "Błąd bazy danych";
@@ -49,13 +53,32 @@
     }
     if($response->num_rows != 0){
         $row = $response->fetch_assoc();
-        $_SESSION['add_edition_error'] = "Nie dodano edycji. Data głosowania koliduje z datą głosowania w edycji nr: ".$row['Nr_edycji'];
+        $_SESSION['add_edition_error'] = "Nie dodano edycji. Data zgłoszeń lub głosowania koliduje z datą głosowania w edycji nr: ".$row['Nr_edycji'];
         $response->close();
         $db_connect->close();
         header("Location: ../pages/admin_panel.php");
         exit();
     }
     
+    //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte zgloszenia - odrzucić
+    $sql = "SELECT * FROM edycje WHERE Zgloszenia <= '$participant_deadline' AND Glosowanie >= '$participant_deadline'
+            UNION
+            SELECT * FROM edycje WHERE Zgloszenia <= '$voting_deadline' AND Glosowanie >= '$voting_deadline'";
+    $response = $db_connect->query($sql);
+    if($response == false){
+        $_SESSION['add_edition_error'] = "Błąd bazy danych";
+        $db_connect->close();
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
+    if($response->num_rows != 0){
+        $row = $response->fetch_assoc();
+        $_SESSION['add_edition_error'] = "Nie dodano edycji. Data zgłoszeń koliduje z datą zgłoszeń w edycji nr: ".$row['Nr_edycji'];
+        $response->close();
+        $db_connect->close();
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
 
     //pobieram numer ostatniej edycji
     $sql = "SELECT Nr_edycji FROM edycje ORDER BY Nr_edycji DESC LIMIT 1";

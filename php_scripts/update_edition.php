@@ -43,8 +43,12 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
         exit();
     };
 
-    //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić zmiany
-    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline' AND NOT Nr_edycji = '$edition_number'";
+    //walidacja, sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić zmiany
+    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'  AND NOT Nr_edycji = '$edition_number'
+            UNION 
+            SELECT * FROM edycje WHERE Glosowanie <= '$result_deadline' AND Wyniki >= '$result_deadline'  AND NOT Nr_edycji = '$edition_number'
+            UNION
+            SELECT * FROM edycje WHERE Glosowanie <= '$participant_deadline' AND Wyniki >= '$participant_deadline'  AND NOT Nr_edycji = '$edition_number'";
     $response = $db_connect->query($sql);
     if($response == false){
         $_SESSION['update_edition_error'] = "Błąd bazy danych";
@@ -54,13 +58,52 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
     }
     if($response->num_rows != 0){
         $row = $response->fetch_assoc();
-        $_SESSION['update_edition_error'] = "Nie wprowadzono zmian. Data głosowania koliduje z datą głosowania w edycji nr: ".$row['Nr_edycji'];
+        $_SESSION['update_edition_error'] = "Nie wprowadzono zmian. Data zgłoszeń lub głosowania koliduje z datą głosowania w edycji nr: ".$row['Nr_edycji'];
         $response->close();
         $db_connect->close();
         header("Location: ../pages/admin_panel.php");
         exit();
     }
     
+    //walidacja, sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte zgloszenia - odrzucić
+    $sql = "SELECT * FROM edycje WHERE Zgloszenia <= '$participant_deadline' AND Glosowanie >= '$participant_deadline' AND NOT Nr_edycji = '$edition_number'
+            UNION 
+            SELECT * FROM edycje WHERE Zgloszenia <= '$voting_deadline' AND Glosowanie >= '$voting_deadline' AND NOT Nr_edycji = '$edition_number'";
+    $response = $db_connect->query($sql);
+    if($response == false){
+        $_SESSION['update_edition_error'] = "Błąd bazy danych";
+        $db_connect->close();
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
+    if($response->num_rows != 0){
+        $row = $response->fetch_assoc();
+        $_SESSION['update_edition_error'] = "Nie wprowadzono zmian. Data zgłoszeń koliduje z datą zgłoszeń w edycji nr: ".$row['Nr_edycji'];
+        $response->close();
+        $db_connect->close();
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
+
+    //walidacja, sprawdzenie czy któraś z edycji jest już aktywna (w danym momencie może być tylko jedna) - odrzucić zmiany
+    if($edition_status == 1){
+        $sql = "SELECT * FROM edycje WHERE Status='1' AND NOT Nr_edycji = '$edition_number'";
+        $response = $db_connect->query($sql);
+        if($response == false){
+            $_SESSION['update_edition_error'] = "Błąd bazy danych";
+            $db_connect->close();
+            header("Location: ../pages/admin_panel.php");
+            exit();
+        }
+        if($response->num_rows != 0){
+            $row = $response->fetch_assoc();
+            $_SESSION['update_edition_error'] = "Nie wprowadzono zmian. Aktywna jest już edycja nr: ".$row['Nr_edycji'];
+            $response->close();
+            $db_connect->close();
+            header("Location: ../pages/admin_panel.php");
+            
+        }
+    }
 
     //aktualizacja edycji
     $sql = "UPDATE edycje 

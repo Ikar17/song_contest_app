@@ -1,5 +1,6 @@
 .editions_container {
   width: 100%;
+  min-height: 45vh;
   background-image: url("../assets/active_edition_background.png");
   background-repeat: no-repeat;
   background-size: cover;

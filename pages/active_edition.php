@@ -87,7 +87,9 @@
                     exit();
                 }
 
-                for($i=1; $i <= $result->num_rows; $i++){
+                if($result->num_rows == 0){
+                    echo "Brak aktywnej edycji";
+                }else{
                     //pobieranie informacji o edycji
                     $row = $result->fetch_assoc();
                     $nr_edycji = $row['Nr_edycji'];
@@ -231,8 +233,8 @@
                         </section>
                     </div>
                 <?php 
-                    }
                     $result->close();
+                    }
                 ?>
         </div>
     </main>
