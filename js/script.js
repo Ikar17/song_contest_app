@@ -51,7 +51,8 @@ function showSongs(data, containerHandler){
         const title = data.results[i].Tytul;
         //tworzenie elementu html
         const songDiv = document.createElement('div');
-        songDiv.innerText = `${singer} - ${title}`;
+        songDiv.classList.add('song');
+        songDiv.innerText = `${i+1}.  ${singer} - ${title}`;
         containerHandler.appendChild(songDiv);
     }
 }

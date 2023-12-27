@@ -79,11 +79,11 @@
             <div id="searchSongForm">
                 <div>
                     <label for="searchSongBySinger">Wyszukaj po wykonawcy: </label>
-                    <input id="searchSongBySinger" type="text">
+                    <input id="searchSongBySinger" type="text" placeholder="szukaj...">
                 </div>
                 <div>                  
                     <label for="searchSongByTitle">Wyszukaj po tytule: </label>
-                    <input id="searchSongByTitle" type="text">
+                    <input id="searchSongByTitle" type="text" placeholder="szukaj...">
                 </div>
             </div>
             <div class="line"></div>
