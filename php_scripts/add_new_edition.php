@@ -12,21 +12,23 @@
     $voting_deadline = $_POST['voting_deadline'];
     $result_deadline = $_POST['result_deadline'];
 
-    unset($_POST['participant_deadline']);
-    unset($_POST['voting_deadline']);
-    unset($_POST['result_deadline']);
-
-    //walidacja - kolejność: zgłoszenia, głosowanie, wyniki
-    if($participant_deadline >= $voting_deadline || $voting_deadline >= $result_deadline){
-        $_SESSION['add_edition_error'] = "Niepoprawny terminarz. Kolejność terminów: zgłoszenia, głosowanie, wyniki";
+    //walidacja - sprawdzanie typu danych
+    require_once "./sanitize_validate.php";
+    if(!is_validate_date($participant_deadline) || !is_validate_date($voting_deadline) || !is_validate_date($result_deadline)){
         header("Location: ../pages/admin_panel.php");
         exit();
     }
 
-
     //walidacja - puste pola
     if($participant_deadline == null || $voting_deadline==null ||  $result_deadline==null){
         $_SESSION['add_edition_error'] = "Nie wprowadzono wszystkich niezbędnych danych";
+        header("Location: ../pages/admin_panel.php");
+        exit();
+    }
+
+    //walidacja - kolejność: zgłoszenia, głosowanie, wyniki
+    if($participant_deadline >= $voting_deadline || $voting_deadline >= $result_deadline){
+        $_SESSION['add_edition_error'] = "Niepoprawny terminarz. Kolejność terminów: zgłoszenia, głosowanie, wyniki";
         header("Location: ../pages/admin_panel.php");
         exit();
     }
@@ -39,12 +41,18 @@
     };
 
     //walidacja, sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić
-    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'
+    $sql = "SELECT * FROM edycje WHERE Glosowanie <= ? AND Wyniki >= ?
             UNION
-            SELECT * FROM edycje WHERE Glosowanie <= '$result_deadline' AND Wyniki >= '$result_deadline'
+            SELECT * FROM edycje WHERE Glosowanie <= ? AND Wyniki >= ?
             UNION
-            SELECT * FROM edycje WHERE Glosowanie <= '$participant_deadline' AND Wyniki >= '$participant_deadline'";
-    $response = $db_connect->query($sql);
+            SELECT * FROM edycje WHERE Glosowanie <= ? AND Wyniki >= ?";
+
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("ssssss",$voting_deadline, $voting_deadline, $result_deadline, $result_deadline, $participant_deadline, $participant_deadline);
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false){
         $_SESSION['add_edition_error'] = "Błąd bazy danych";
         $db_connect->close();
@@ -61,10 +69,15 @@
     }
     
     //walidacja, todo sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte zgloszenia - odrzucić
-    $sql = "SELECT * FROM edycje WHERE Zgloszenia <= '$participant_deadline' AND Glosowanie >= '$participant_deadline'
+    $sql = "SELECT * FROM edycje WHERE Zgloszenia <= ? AND Glosowanie >= ?
             UNION
-            SELECT * FROM edycje WHERE Zgloszenia <= '$voting_deadline' AND Glosowanie >= '$voting_deadline'";
-    $response = $db_connect->query($sql);
+            SELECT * FROM edycje WHERE Zgloszenia <= ? AND Glosowanie >= ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("ssss",$participant_deadline, $participant_deadline, $voting_deadline, $voting_deadline);
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false){
         $_SESSION['add_edition_error'] = "Błąd bazy danych";
         $db_connect->close();
@@ -96,11 +109,11 @@
 
     //wstawiam nową edycję
     $new_edition_number = $last_edition_number + 1;
-    $sql = "INSERT INTO edycje (Nr_edycji, Zgloszenia, Glosowanie, Wyniki) 
-            VALUES('$new_edition_number','$participant_deadline','$voting_deadline','$result_deadline')";
+    $stmt = $db_connect->prepare("INSERT INTO edycje (Nr_edycji, Zgloszenia, Glosowanie, Wyniki) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("isss", $new_edition_number, $participant_deadline, $voting_deadline, $result_deadline);
+    $stmt->execute();
 
-    $db_connect->query($sql);
-
+    $stmt->close();
     $db_connect->close();
 
     header("Location: ../pages/admin_panel.php");
