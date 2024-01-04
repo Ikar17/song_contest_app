@@ -30,7 +30,6 @@ main > .container {
   justify-content: center;
   align-items: center;
   gap: 13px;
-  width: 100%;
   font-size: 150%;
   background-image: linear-gradient(transparent, #03045e, transparent);
   padding: 20px;
@@ -101,4 +100,63 @@ main > .container {
   to {
     transform: translateY(-10px);
   }
-}/*# sourceMappingURL=home_page.css.map */
+}
+
+@media only screen and (max-width: 1050px) {
+  .main_content {
+    width: 90%;
+  }
+
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .main_content > header {
+    font-size: 100%;
+  }
+
+  .note {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+  }
+
+  .tile{
+    font-size: 85%;
+  }
+
+  .tile:hover {
+    font-size: 110%;
+  }
+
+}
+
+@media only screen and (max-width: 450px) {
+
+  .main_content > header {
+    font-size: 70%;
+  }
+
+  .note {
+    width: 8px;
+    height: 8px;
+    background-size: cover;
+  }
+
+  .tile{
+    font-size: 65%;
+  }
+  
+  .tile:hover {
+    font-size: 85%;
+  }
+
+}
+
+@media only screen and (min-width: 2000px) {
+
+  .main_content {
+    width: 1500px;
+  }
+
+}
