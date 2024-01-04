@@ -9,7 +9,6 @@
 .edition {
   display: flex;
   flex-direction: column;
-  /* border: 2px solid black; */
   padding: 20px 0;
   gap: 10px;
 }
@@ -26,7 +25,7 @@
   display: flex;
   height: 40px;
   gap: 10px;
-  background-color: #BBB5BD; /* rgba(0, 0, 0, 0.15);*/
+  background-color: #BBB5BD; 
   padding: 8px;
 }
 
@@ -89,6 +88,7 @@
 
 .participants table{
   width: 100%;
+  overflow-x: none;
 }
 
 .results table{
@@ -128,18 +128,6 @@ tr{
   background-color: #dee2ff;
 }
 
-/* .results tr:nth-child(2){
-  background-color: #e9c46a;
-}
-
-.results tr:nth-child(3){
-  background-color: #bcb8b1;
-}
-
-.results tr:nth-child(4){
-  background-color: #eaac8b;
-} */
-
 .results td:nth-child(1){
   text-align: center;
   padding-left: 0;
@@ -172,4 +160,67 @@ input[type=submit]:hover {
   background: #0055dd;
   transition: 0.5s;
   cursor: pointer;
+}
+
+
+@media only screen and (max-width: 1050px) {
+
+  .voting form{
+    width: 70%;
+  }
+
+  .schedule table{
+    width: 75%;
+  }
+
+  .title {
+    font-size: 90%;
+  }
+
+  .results table{
+    width: 80%;
+  }
+
+  .participants table{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 90%;
+  }
+
+  .participants table tbody {
+    display: table;
+    width: 100%;
+  }
+
+}
+
+@media only screen and (max-width: 650px) {
+
+  .results table{
+    width: 95%;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 95%;
+  }
+
+}
+
+@media only screen and (max-width: 450px) {
+
+  .voting form{
+    width: 90%;
+  }
+
+  .schedule table{
+    width: 95%;
+  }
+
+}
+
+@media only screen and (min-width: 2000px) {
+
+
+
 }
