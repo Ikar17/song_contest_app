@@ -71,3 +71,27 @@ input[type=submit]:hover {
 .update_edition_search{
     margin-top: 20px;
 }
+
+@media only screen and (max-width: 1050px) {
+
+    input[type=submit] {
+        margin: 10px 0;
+    }
+  
+}
+  
+  
+@media only screen and (max-width: 450px) {
+  
+    table{
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    table tbody {
+        display: table;
+        width: 100%;
+    }
+  
+}
