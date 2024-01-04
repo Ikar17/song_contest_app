@@ -10,9 +10,9 @@
 
 <!DOCTYPE html>
 <head>
-    <link rel="stylesheet" href="../css/general.css" />
-    <link rel="stylesheet" href="../css/navigation.css" />
-    <link rel="stylesheet" href="../css/start_page.css" />
+    <link rel="stylesheet" href="../css/general.css?v=<?php echo time(); ?>" />
+    <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>" />
+    <link rel="stylesheet" href="../css/start_page.css?v=<?php echo time(); ?>" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 

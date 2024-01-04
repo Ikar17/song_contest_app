@@ -67,4 +67,80 @@ main {
 
 .main_desc--form {
   align-items: center;
-}/*# sourceMappingURL=start_page.css.map */
+}
+
+@media only screen and (max-width: 1050px) {
+
+  .main_desc {
+    width: 70%;
+  }
+
+  .container {
+    width: 85%;
+  }
+
+  form {
+    width: 60%;
+  }
+
+}
+
+@media only screen and (max-width: 650px) {
+  .main_desc {
+    width: 90%;
+    font-size: 90%;
+  }
+
+  .primary_button{
+    font-size: 55%;
+    padding: 5px;
+  }
+
+  .primary_button:hover{
+    font-size: 65%;
+  }
+
+  .container {
+    width: 90%;
+  }
+
+  form {
+    width: 70%;
+  }
+
+  form .primary_button{
+    width: 100%;
+    font-size: 100%;
+  }
+
+  form .primary_button:hover{
+    font-size: 120%;
+  }
+
+}
+
+@media only screen and (max-width: 450px) {
+  .primary_button{
+    min-width: 30px;
+    max-width: 75px;
+    font-size: 50%;
+  }
+
+  .container {
+    width: 95%;
+  }
+
+  form {
+    width: 85%;
+  }
+
+  form .primary_button{
+    min-width: 100%;
+    font-size: 100%;
+  }
+
+  form .primary_button:hover{
+    font-size: 120%;
+  }
+
+}
