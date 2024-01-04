@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', () =>{
     form = document.getElementById('searchSongForm');
     resultsContainer = document.getElementById('searchSongsResults');
 
-    form.addEventListener('input', async () => {
-        const songs = await getSongs(singerElement.value, titleElement.value);
-        showSongs(songs, resultsContainer);
-    })
-
+    if(form){
+        form.addEventListener('input', async () => {
+            const songs = await getSongs(singerElement.value, titleElement.value);
+            showSongs(songs, resultsContainer);
+        })
+    }
 })
 
 function getSongs(singer, title) {
@@ -54,6 +55,20 @@ function showSongs(data, containerHandler){
         songDiv.classList.add('song');
         songDiv.innerText = `${i+1}.  ${singer} - ${title}`;
         containerHandler.appendChild(songDiv);
+    }
+}
+
+function showSidebar(){
+    const sidebar = document.getElementById('mobile-sidebar');
+    if(sidebar){
+        sidebar.style.display = 'flex';
+    }
+}
+
+function hideSidebar(){
+    const sidebar = document.getElementById('mobile-sidebar');
+    if(sidebar){
+        sidebar.style.display = 'none';
     }
 }
 

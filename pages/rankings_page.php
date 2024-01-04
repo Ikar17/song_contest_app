@@ -32,40 +32,10 @@
 </head>
 <body>
     <nav>
-        <div class="container nav_content">
-            <a href="./home_page.php" class="nav_logo">
-                <img src="../assets/logo.png" alt="logo" />
-                <h1>Song Contest</h1>
-            </a>
-            <div class="nav_links">
-                <div class="links_to_pages">
-                    <a href="./home_page.php">
-                        Strona główna
-                    </a>
-                    <?php
-                        if($_SESSION['login']['role'] == "Admin"){
-                            echo <<< ENDL
-                            <a href="./admin_panel.php">
-                                Panel admina
-                            </a>
-                            ENDL;
-                        }
-                    ?>
-                </div>
-                <div class="nav_profile">
-                    <img src="../assets/user.png" alt="avatar" />
-                    <button class="nav_profile_button">
-                        <?php
-                            if(isset($_SESSION['login'])){
-                                echo $_SESSION['login']['nickname'];
-                            }
-                        ?>
-                        <a href="../php_scripts/logout.php">Wyloguj się</a>
-                    </button>
-                </div>
-            </div>
-            
-        </div>
+        <?php 
+            require_once "../php_scripts/navigation.php";
+            echo get_navigation();
+        ?>
     </nav>
 
     <section class="website_title">

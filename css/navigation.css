@@ -7,6 +7,15 @@ nav {
   z-index: 10;
 }
 
+li{
+  list-style-type: none;
+  margin-left: 55px;
+}
+
+li:nth-last-child(1){
+  margin-left: 25px;
+}
+
 .nav_content {
   display: flex;
   justify-content: space-between;
@@ -19,32 +28,75 @@ nav {
   gap: 12px;
 }
 
-.nav_profile {
-  display: flex;
-  gap: 5px;
-}
-
-.nav_profile a{
-  margin-left: 15px;
-}
-
-.nav_profile_button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  text-decoration: none;
-  background-color: transparent;
-  color: white;
-  border: none;
-}
-
 .nav_links{
   display: flex;
   align-items: center;
-  gap: 50px;
+  justify-content: flex-end;
+  height: 50px;
 }
 
-.links_to_pages{
+.nav_profile {
   display: flex;
-  gap: 30px;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.nav_links--mobile{
+  display: none;
+}
+
+.open_sidebar_button{
+  display: none;
+}
+
+@media only screen and (max-width: 1050px) {
+  .open_sidebar_button{
+    display: initial;
+    width: 32px;
+    height: 32px;
+    background-image: url("../assets/hamburger.png");
+    background-size: cover;
+    border: none;
+    background-color: transparent;
+  }
+
+  .open_sidebar_button:hover{
+    cursor: pointer;
+  }
+
+  .nav_links{
+    display: none;
+  }
+
+  .nav_links--mobile{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #03045e;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav_links--mobile li{
+    margin-left: 0;
+    margin-top: 50px;
+    font-size: 200%;
+  }
+
+  .close_sidebar_button{
+    width: 64px;
+    height: 64px;
+    background-image: url("../assets/delete.png");
+    background-size: cover;
+    border: none;
+    background-color: transparent;
+  }
+
+
 }
