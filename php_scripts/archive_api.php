@@ -46,8 +46,13 @@ function show_edition($db_connect, $edition_number){
     $html = "<div class='edition_archive_headline'><h1>Edycja nr $edition_number </h1></div>";
 
     #pobieranie informacji o terminarzu
-    $sql = "SELECT * FROM edycje WHERE Nr_edycji = '$edition_number'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT * FROM edycje WHERE Nr_edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i",$edition_number);
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false || $response->num_rows == 0){
         return "Błąd bazy danych";
         exit();

@@ -25,9 +25,6 @@
     $edition = $_SESSION['voting_edition'];
     $nickname = $_SESSION['login']['nickname'];
 
-    unset($_POST['first_place']);
-    unset($_POST['second_place']);
-    unset($_POST['third_place']);
     unset($_SESSION['voting_edition']);
 
     //walidacja - jedna piosenka == jedno miejsce
@@ -46,31 +43,38 @@
 
 
     //pobieram id edycji
-    $sql = "SELECT Id FROM edycje WHERE Nr_edycji = '$edition'";
-    $result = $db_connect->query($sql);
+    $sql = "SELECT Id FROM edycje WHERE Nr_edycji = ?";
+
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition );
+    $stmt->execute(); 
+    $result = $stmt->get_result();      
+    $stmt->close();
+
     $row = $result->fetch_assoc();
     $editionId = $row['Id'];
     $result->close();
 
     //pobieram id uzytkownika
-    $sql = "SELECT Id FROM użytkownicy WHERE Nickname = '$nickname'";
-    $result = $db_connect->query($sql);
+    $sql = "SELECT Id FROM użytkownicy WHERE Nickname = ?";
+
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("s", $nickname );
+    $stmt->execute(); 
+    $result = $stmt->get_result();      
+    $stmt->close();
+
     $row = $result->fetch_assoc();
     $userId = $row['Id'];
     $result->close();
 
-
     //wstawiem rekord głosowania
-    $sql = "INSERT INTO głosowanie (Id_edycji, Id_uzytkownika, Id_piosenki_1, Id_piosenki_2, Id_piosenki_3)
-    VALUES(
-        $editionId,
-        $userId,
-        $id_song_first_place,
-        $id_song_second_place,
-        $id_song_third_place
-    )";
+    $sql = "INSERT INTO głosowanie (Id_edycji, Id_uzytkownika, Id_piosenki_1, Id_piosenki_2, Id_piosenki_3) VALUES(?, ?, ?, ?, ?)";
 
-    $db_connect->query($sql);
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("iiiii", $editionId, $userId, $id_song_first_place, $id_song_second_place, $id_song_third_place );
+    $stmt->execute();       
+    $stmt->close();
 
     $db_connect->close();
 

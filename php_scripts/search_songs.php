@@ -20,9 +20,16 @@
     }
 
     #pobieranie danych z bazy
-    $sql = "SELECT * FROM piosenki WHERE Wykonawca LIKE '$singer%' AND Tytul LIKE '$title%'";
+    $singer = $singer."%";
+    $title = $title."%";
+    $sql = "SELECT * FROM piosenki WHERE Wykonawca LIKE ? AND Tytul LIKE ?";
 
-    $response = $db_connect->query($sql);
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("ss",$singer, $title );
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false){
         $db_connect->close();
         echo json_encode($data);

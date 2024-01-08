@@ -6,6 +6,7 @@
     }
 
     require_once "db_config.php";
+    require_once "sanitize_validate.php";
 
     session_start();
 
@@ -15,13 +16,18 @@
         $login = $_POST['login'];
         $password = $_POST['password'];
 
-        $login = htmlentities($login, ENT_QUOTES, "UTF-8");
+        $login = sanitize_string($login);
     
-        $sql = sprintf("SELECT Nickname, Haslo, role.Nazwa as Rola FROM użytkownicy 
-                JOIN role ON role.Id = użytkownicy.id_rola WHERE Nickname = '%s'",
-                mysqli_real_escape_string($connect, $login));
+        $sql = "SELECT Nickname, Haslo, role.Nazwa as Rola FROM użytkownicy 
+                JOIN role ON role.Id = użytkownicy.id_rola WHERE Nickname = ?";
+        
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s",$login);
+        $stmt->execute();       
+        $result = $stmt->get_result();
+        $stmt->close();
 
-        if($result = @$connect->query($sql)){
+        if($result){
 
             if($result->num_rows == 1){
                 $row = $result->fetch_assoc();

@@ -19,9 +19,12 @@
 
     //pobieranie id użytkownika
     $nickname = $_SESSION['login']['nickname'];
-    $sql = "SELECT Id FROM użytkownicy WHERE Nickname = '$nickname'";
+    $stmt = $db_connect->prepare("SELECT Id FROM użytkownicy WHERE Nickname = ?");
+    $stmt->bind_param("s",$nickname);
+    $stmt->execute();       
+    $result = $stmt->get_result();
+    $stmt->close();
 
-    $result = $db_connect->query($sql);
     if($result == false || $result->num_rows == 0){
         header('Location: ../pages/active_edition.php');
         exit();
@@ -33,9 +36,13 @@
 
     //pobieranie id edycji
     $edition = $_SESSION['edition'];
-    $sql = "SELECT Id FROM edycje WHERE Nr_Edycji = '$edition'";
+    $sql = "SELECT Id FROM edycje WHERE Nr_Edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i",$edition);
+    $stmt->execute();       
+    $result = $stmt->get_result();
+    $stmt->close();
 
-    $result = $db_connect->query($sql);
     if($result == false || $result->num_rows == 0){
         header('Location: ../pages/active_edition.php');
         exit();
@@ -50,8 +57,13 @@
     $title = trim($_POST['songTitle']);
     $link = trim($_POST['songUrl']);
 
-    $sql = "SELECT * FROM piosenki WHERE Wykonawca = '$singer' AND Tytul='$title'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT * FROM piosenki WHERE Wykonawca = ? AND Tytul= ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("ss",$singer,$title);
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response && $response->num_rows > 0){
         $response->close();
         $_SESSION["add_participant_error"] = "Dana piosenka już brała udział";
@@ -62,9 +74,11 @@
 
     //wstawianie nowej piosenki
     $sql = "INSERT INTO piosenki (Wykonawca, TytuL, Link, Id_uzytkownika, Id_edycji) 
-            VALUES('$singer', '$title', '$link', '$user_id', '$edition_id')";
-
-    $res = $db_connect->query($sql);
+            VALUES(?, ?, ?, ?, ?)";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("sssii", $singer, $title, $link, $user_id, $edition_id);
+    $stmt->execute();       
+    $stmt->close();
 
     $db_connect->close();
 

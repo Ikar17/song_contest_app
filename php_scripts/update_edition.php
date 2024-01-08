@@ -14,12 +14,7 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
     $edition_number = $_SESSION['update_edition_number'];
     $edition_status = $_POST['status'];
 
-
-    unset($_POST['participant_deadline']);
-    unset($_POST['voting_deadline']);
-    unset($_POST['result_deadline']);
     unset($_SESSION['update_edition_number']);
-    unset($_POST['status']);
 
     //walidacja - kolejność: zgłoszenia, głosowanie, wyniki
     if($participant_deadline >= $voting_deadline || $voting_deadline >= $result_deadline){
@@ -44,12 +39,18 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
     };
 
     //walidacja, sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte głosowanie - odrzucić zmiany
-    $sql = "SELECT * FROM edycje WHERE Glosowanie <= '$voting_deadline' AND Wyniki >= '$voting_deadline'  AND NOT Nr_edycji = '$edition_number'
+    $sql = "SELECT * FROM edycje WHERE Glosowanie <= ? AND Wyniki >= ?  AND NOT Nr_edycji = ?
             UNION 
-            SELECT * FROM edycje WHERE Glosowanie <= '$result_deadline' AND Wyniki >= '$result_deadline'  AND NOT Nr_edycji = '$edition_number'
+            SELECT * FROM edycje WHERE Glosowanie <= ? AND Wyniki >= ?  AND NOT Nr_edycji = ?
             UNION
-            SELECT * FROM edycje WHERE Glosowanie <= '$participant_deadline' AND Wyniki >= '$participant_deadline'  AND NOT Nr_edycji = '$edition_number'";
-    $response = $db_connect->query($sql);
+            SELECT * FROM edycje WHERE Glosowanie <= ? AND Wyniki >= ?  AND NOT Nr_edycji = ?";
+    
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("ssississi", $voting_deadline, $voting_deadline, $edition_number, $result_deadline, $result_deadline, $edition_number, $participant_deadline, $participant_deadline, $edition_number);
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+    
     if($response == false){
         $_SESSION['update_edition_error'] = "Błąd bazy danych";
         $db_connect->close();
@@ -66,10 +67,16 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
     }
     
     //walidacja, sprawdzenie czy któraś z edycji ma już w podanym terminie otwarte zgloszenia - odrzucić
-    $sql = "SELECT * FROM edycje WHERE Zgloszenia <= '$participant_deadline' AND Glosowanie >= '$participant_deadline' AND NOT Nr_edycji = '$edition_number'
+    $sql = "SELECT * FROM edycje WHERE Zgloszenia <= ? AND Glosowanie >= ? AND NOT Nr_edycji = ?
             UNION 
-            SELECT * FROM edycje WHERE Zgloszenia <= '$voting_deadline' AND Glosowanie >= '$voting_deadline' AND NOT Nr_edycji = '$edition_number'";
-    $response = $db_connect->query($sql);
+            SELECT * FROM edycje WHERE Zgloszenia <= ? AND Glosowanie >= ? AND NOT Nr_edycji = ?";
+    
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("ssissi", $participant_deadline, $participant_deadline, $edition_number, $voting_deadline, $voting_deadline, $edition_number);
+    $stmt->execute();       
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false){
         $_SESSION['update_edition_error'] = "Błąd bazy danych";
         $db_connect->close();
@@ -87,8 +94,14 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
 
     //walidacja, sprawdzenie czy któraś z edycji jest już aktywna (w danym momencie może być tylko jedna) - odrzucić zmiany
     if($edition_status == 1){
-        $sql = "SELECT * FROM edycje WHERE Status='1' AND NOT Nr_edycji = '$edition_number'";
-        $response = $db_connect->query($sql);
+
+        $sql = "SELECT * FROM edycje WHERE Status='1' AND NOT Nr_edycji = ?";
+        $stmt = $db_connect->prepare($sql);
+        $stmt->bind_param("i", $edition_number);
+        $stmt->execute();
+        $response = $stmt->get_result();       
+        $stmt->close();
+
         if($response == false){
             $_SESSION['update_edition_error'] = "Błąd bazy danych";
             $db_connect->close();
@@ -107,10 +120,13 @@ if(!isset($_POST['participant_deadline']) || !isset($_POST['voting_deadline'])
 
     //aktualizacja edycji
     $sql = "UPDATE edycje 
-            SET Zgloszenia = '$participant_deadline', Glosowanie = '$voting_deadline', Wyniki='$result_deadline ', Status='$edition_status' 
-            WHERE Nr_edycji = '$edition_number'";
+            SET Zgloszenia = ?, Glosowanie = ?, Wyniki=?, Status=?
+            WHERE Nr_edycji = ?";
 
-    $db_connect->query($sql);
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("sssii", $participant_deadline, $voting_deadline, $result_deadline, $edition_status, $edition_number);
+    $stmt->execute();       
+    $stmt->close();
 
     $db_connect->close();
 

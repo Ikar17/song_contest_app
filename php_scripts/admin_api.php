@@ -28,9 +28,14 @@ function get_all_editions($db_connect){
 function get_edition($db_connect, $edition_number){
     $sql = "SELECT Id, Nr_edycji, DATE_FORMAT(Zgloszenia, '%Y-%m-%d %H:%i') as Zgloszenia,
     DATE_FORMAT(Glosowanie, '%Y-%m-%d %H:%i') as Glosowanie, DATE_FORMAT(Wyniki, '%Y-%m-%d %H:%i') as Wyniki, Status
-    FROM edycje WHERE Nr_edycji='$edition_number'";
+    FROM edycje WHERE Nr_edycji= ?";
 
-    $response = $db_connect->query($sql);
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition_number);
+    $stmt->execute();    
+    $response = $stmt->get_result();   
+    $stmt->close();
+
     if($response == false || $response->num_rows == 0) return null;
 
     $row = $response->fetch_assoc();
