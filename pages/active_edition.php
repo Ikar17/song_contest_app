@@ -8,6 +8,12 @@
 
     require_once "../php_scripts/db_config.php";
     require_once "../php_scripts/user_api.php";
+
+    if(isset($_POST['delete'])){
+        header('Location: ../php_scripts/delete_participant.php');
+        exit();
+    }
+
     try{
         $db_connect = new mysqli($host, $db_user, $db_password, $db_name);
         if($db_connect->connect_errno != 0) throw new Exception("Database connection error");
@@ -107,24 +113,41 @@
                             if(date('Y-m-d H:i:s') >= $data_glosowania->format('Y-m-d H:i:s')){
                                 echo "<h3>Przyjmowanie zgłoszeń zostało zamknięte</h3>";
                             }
-                            else if(does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
+                            else if(!isset($_POST['edit']) && does_user_participate($db_connect, $_SESSION['login']['nickname'],$nr_edycji)){
                                 echo "<h3>Zgłosiłeś już swoją propozycję</h3>";
                             }
                             else if(date('Y-m-d H:i:s') < $data_zgloszen->format('Y-m-d H:i:s')){
                                 echo "<h3>Zgłoszenia nie są jeszcze otwarte</h3>";
                             }
                             else{
-                                echo<<<ENDL
-                                <form method="POST" action="../php_scripts/add_participant.php">
-                                    <label for="name">Wykonawca piosenki</label>
-                                    <input type="text" id="name" name="author">
-                                    <label for="songTitle">Tytuł piosenki</label>
-                                    <input type="text" id="songTitle" name="songTitle">
-                                    <label for="songUrl">Link piosenki</label>
-                                    <input type="url" id="songUrl" name="songUrl" >
-                                    <input type="submit" value="Dodaj zgłoszenie" >
-                                </form>
-                                ENDL;
+                                if(isset($_POST['edit']) && isset($_POST['singer']) && isset($_POST['title']) && isset($_POST['link']) ){
+                                    $singer_edit = $_POST['singer'];
+                                    $title_edit = $_POST['title'];
+                                    $link_edit = $_POST['link'];
+                                    echo<<<ENDL
+                                    <form method="POST" action='../php_scripts/update_participant.php'>
+                                        <label for="name">Wykonawca piosenki</label>
+                                        <input type="text" id="name" name="singer" value='$singer_edit'>
+                                        <label for="songTitle">Tytuł piosenki</label>
+                                        <input type="text" id="songTitle" name="title" value='$title_edit'>
+                                        <label for="songUrl">Link piosenki</label>
+                                        <input type="url" id="songUrl" name="link" value='$link_edit'>
+                                        <input type="submit" class='button button--large button--primary' value="Zaktualizuj" >
+                                    </form>
+                                    ENDL; 
+                                }else{
+                                    echo<<<ENDL
+                                    <form method="POST" action="../php_scripts/add_participant.php">
+                                        <label for="name">Wykonawca piosenki</label>
+                                        <input type="text" id="name" name="author">
+                                        <label for="songTitle">Tytuł piosenki</label>
+                                        <input type="text" id="songTitle" name="songTitle">
+                                        <label for="songUrl">Link piosenki</label>
+                                        <input type="url" id="songUrl" name="songUrl" >
+                                        <input type="submit" class='button button--large button--primary' value="Dodaj zgłoszenie" >
+                                    </form>
+                                    ENDL;
+                                }
 
                                 if(isset($_SESSION["add_participant_error"])){
                                     $statement = $_SESSION["add_participant_error"];
@@ -155,20 +178,50 @@
                                         $link = $participant['link'];
 
                                         $ordinal_number = $x + 1;
-                                        echo<<< ENDL
-                                        <tr>
-                                            <td>$ordinal_number</td>
-                                            <td>$nickname</td>
-                                            <td>$singer</td>
-                                            <td>$title</td>
-                                            <td>
-                                                <a href="$link">
-                                                    <img src="../assets/youtube.png"/>
-                                                    Posłuchaj
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        
+                                        if($nickname == $_SESSION['login']['nickname'] && $data_glosowania->format('d-m-Y H:i') > date('d-m-Y H:i')){
+                                            echo<<< ENDL
+                                            <tr>
+                                            <form method='POST' action='active_edition.php'>
+                                                <td>$ordinal_number</td>
+                                                <td>$nickname</td>
+                                                <td>
+                                                    $singer
+                                                    <input name='singer' value='$singer' hidden/>
+                                                </td>
+                                                <td>
+                                                    $title
+                                                    <input name='title' value='$title' hidden/> 
+                                                </td>
+                                                <td>
+                                                    <a href="$link">
+                                                        <img src="../assets/youtube.png"/>
+                                                        Posłuchaj
+                                                    </a>
+                                                    <input name='link' value='$link' hidden/> 
+                                                </td>
+                                                <td class='song_edit_delete'>
+                                                    <input type='submit' class='button button--medium button--primary' name='edit' value='Edytuj' />
+                                                    <input type='submit' class='button button--medium button--delete' name='delete' value='Usuń' />
+                                                </td>
+                                            </form>                                          
+                                            ENDL;
+                                        }else{
+                                            echo<<< ENDL
+                                            <tr>
+                                                <td>$ordinal_number</td>
+                                                <td>$nickname</td>
+                                                <td>$singer</td>
+                                                <td>$title</td>
+                                                <td>
+                                                    <a href="$link">
+                                                        <img src="../assets/youtube.png"/>
+                                                        Posłuchaj
+                                                    </a>
+                                                </td>
                                         ENDL;
+                                        }
+                                        echo "</tr>";
                                     }
                                 ?>
                             </table>

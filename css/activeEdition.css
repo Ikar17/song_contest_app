@@ -51,6 +51,20 @@
   cursor: pointer;
 }
 
+.song_edit_delete{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+}
+
+.song_edit_delete input{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .voting{
   display: flex;
   flex-direction: column;
@@ -143,12 +157,9 @@ tr{
   line-height: 10px;
 }
 
-input[type=submit]{
-  min-width: 100px;
-  min-height: 45px;
-  padding: 5px;
+.button{
+  padding: 6px;
   border-radius: 4px;
-  background-color: #0055ff;;
   outline: none;
   border: 1px solid transparent;
   color: white;
@@ -156,12 +167,43 @@ input[type=submit]{
   transition: 0.5s;
 }
 
-input[type=submit]:hover {
-  background: #0055dd;
+.button--medium{
+  min-width: 60px;
+  min-height: 28px;
+}
+
+.button--large{
+  min-width: 100px;
+  min-height: 45px;
+}
+
+.button:hover{
   transition: 0.5s;
   cursor: pointer;
 }
 
+.button--delete{
+  background-color: #ff0000;
+}
+
+.button--delete:hover {
+  background: #e91010;
+}
+
+.button--primary{
+  background-color: #0055ff;
+}
+
+.button--primary:hover {
+  background: #0055dd;
+}
+
+.edit_input{
+  font-family: "Roboto Mono", monospace;
+  width: 90%;
+  padding: 5px;
+  /* border: none; */
+}
 
 @media only screen and (max-width: 1050px) {
 

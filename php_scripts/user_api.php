@@ -179,8 +179,8 @@ function show_voting($db_connect, $nickname, $edition, $voting_starttime, $resul
         <select id='third_place' name='third_place'>
             $options_third
         </select>
-        <input type='submit' name='save_voting' value='Zapisz'>
-        <input type='submit' name='send_voting' value='Zagłosuj'>
+        <input type='submit' class='button button--large button--primary' name='save_voting' value='Zapisz'>
+        <input type='submit' class='button button--large button--primary' name='send_voting' value='Zagłosuj'>
     </form>";
 }
 
