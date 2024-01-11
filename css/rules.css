@@ -10,7 +10,7 @@ main > div{
     padding: 20px 0;
 }
 
-p{
+main p{
     display: flex;
     align-items: center;
     background-color: white;

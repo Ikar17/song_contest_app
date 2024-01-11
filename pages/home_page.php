@@ -71,7 +71,7 @@
         </div>
     </main>
     <footer>
-
+        <p><span style="font-size: 130%;">&copy;</span>2024 SongContest </p>
     </footer>
 </body>
 </html>
