@@ -84,6 +84,55 @@ function show_editable_edition($db_connect, $edition_number){
 
     $_SESSION['update_edition_number'] = $edition_number;
 
+    //tworzenie widoku piosenek bioracych udzial
+    require_once "../php_scripts/user_api.php";
+    $participants = get_all_participants($db_connect,$edition_number);
+    $html_songs_view = "<div class='participants'>
+                        <table>
+                            <tr>
+                                <th> L.p </th>
+                                <th>Użytkownik</th>
+                                <th>Wykonawca</th>
+                                <th>Tytuł</th>
+                                <th>Link</th>
+                                <th>Działanie</th>
+                            </tr>";
+
+    for($x = 0; $x < count($participants); $x++){
+        $participant = $participants[$x];
+        $song_id = $participant['songId'];
+        $nickname = $participant['nickname'];
+        $singer = $participant['singer'];
+        $title = $participant['title'];
+        $link = $participant['link'];
+        $ordinal_number = $x + 1;  
+        
+        $html_songs_view = $html_songs_view
+        ."<tr>
+            <form method='POST' action='../php_scripts/update_song_admin.php' >
+                <td>$ordinal_number</td>
+                <td>
+                    <input type='text' readonly='readonly' name='nickname' value='$nickname' />
+                </td>
+                <td>
+                    <input type='text' name='singer' value='$singer' />
+                </td>
+                <td>
+                    <input type='text' name='title' value='$title' />
+                </td>
+                <td>
+                    <input type='url' name='link' value='$link' />
+                </td>
+                <td class='song_panel'>
+                    <input type='submit' class='button button--medium button--primary' value='Zapisz zmiany' />
+                    <button type='button' onclick = 'delete_song(this.value)' class='button button--medium button--delete' name='delete' value='$song_id'>Usuń</button>
+                </td>
+            </form>
+        </tr>";
+    }
+    
+    $html_songs_view = $html_songs_view."</table>";
+
     return "
             <h2 class='edit_edition_headline'> Aktualizacja edycji nr: $edition_number </h2>
             <br>
@@ -110,10 +159,10 @@ function show_editable_edition($db_connect, $edition_number){
                         <td><input type='datetime-local' name='result_deadline' id='result_deadline' value='$result_deadline'></td>
                     </tr>
                     <tr>
-                        <td><input type='submit' value='Zaktualizuj edycję'></td>
+                        <td><input type='submit' class='button button--large button--primary' value='Zaktualizuj edycję'></td>
                     </tr>
                 </table>
-            </form>";
-
+            </form>"
+            .$html_songs_view;
 }
 ?>

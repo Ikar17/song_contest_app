@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     if(form){
         form.addEventListener('input', async () => {
             const songs = await getSongs(singerElement.value, titleElement.value);
+            console.log(songs);
             showSongs(songs, resultsContainer);
         })
     }
@@ -35,7 +36,10 @@ function getSongs(singer, title) {
 }
 
 function showSongs(data, containerHandler){
-    if(data == undefined || containerHandler == undefined) return;
+    if(data == undefined || containerHandler == undefined){
+        console.log("Brak danych");
+        return;
+    }
 
     containerHandler.innerHTML = "";
     
@@ -73,4 +77,28 @@ function hideSidebar(){
 }
 
 
+async function delete_song(id_song){
+    if(id_song == undefined) return;
+    id_song = parseInt(id_song);
+    if(typeof id_song != 'number') return;
 
+    data = {
+        id : id_song
+    };
+
+    json = JSON.stringify(data)
+
+    await fetch('../php_scripts/delete_participant_admin.php', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: json
+      })
+      .then(response => response.json())
+      .then(data => {
+        return data;
+      });
+ 
+    window.location.pathname = "./songcontest/pages/admin_panel.php";     
+}

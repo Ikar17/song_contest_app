@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="../css/navigation.css?v=<?php echo time(); ?>"/>
     <link rel="stylesheet" href="../css/general.css?v=<?php echo time(); ?>" />
     <link rel="stylesheet" href="../css/admin_panel.css?v=<?php echo time(); ?>" />
+    <script src="../js/script.js?v=<?php echo time(); ?>"></script>  
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
@@ -66,7 +67,7 @@
                         <td><input type="datetime-local" name="result_deadline" id="result_deadline"></td>
                     </tr>
                     <tr>
-                        <td><input type="submit" value="Dodaj nową edycję"></td>
+                        <td><input type="submit" class="button button--large button--primary" value="Dodaj nową edycję"></td>
                     </tr>
                 </table>
                 
@@ -90,7 +91,7 @@
                     <select id="select_edition" name="select_edition">
                         <?php echo show_editions($db_connect); ?>
                     </select>
-                    <input type="submit" value="Potwierdź">
+                    <input type="submit" class="button button--large button--primary" value="Potwierdź">
                 </form>
             </div>
             
@@ -107,7 +108,16 @@
                     echo "<div class='error'><p> $statement </p></div>";
                     unset($_SESSION['update_edition_error']);
                 }
+                if(isset($_SESSION['delete_song_admin_error'])){
+                    $statement = $_SESSION['delete_song_admin_error'];
+                    echo "<div class='error'><p> $statement </p></div>";
+                    unset($_SESSION['delete_song_admin_error']);
+                }
             ?>
+                <div class="song_update">
+                    
+
+                </div>
             </div>
 
         </section>

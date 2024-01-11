@@ -65,6 +65,48 @@ footer {
   background: linear-gradient(#e66465, #0516cd);
 }
 
+.button{
+  padding: 6px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid transparent;
+  color: white;
+  font-size: 100%;
+  transition: 0.5s;
+  font-family: "Roboto Mono", monospace;
+}
+
+.button--medium{
+  min-width: 60px;
+  min-height: 28px;
+}
+
+.button--large{
+  min-width: 100px;
+  min-height: 45px;
+}
+
+.button:hover{
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.button--delete{
+  background-color: #ff0000;
+}
+
+.button--delete:hover {
+  background: #e91010;
+}
+
+.button--primary{
+  background-color: #0055ff;
+}
+
+.button--primary:hover {
+  background: #0055dd;
+}
+
 
 @media only screen and (max-width: 1050px) {
   .container {

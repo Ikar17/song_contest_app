@@ -157,47 +157,6 @@ tr{
   line-height: 10px;
 }
 
-.button{
-  padding: 6px;
-  border-radius: 4px;
-  outline: none;
-  border: 1px solid transparent;
-  color: white;
-  font-size: 100%;
-  transition: 0.5s;
-}
-
-.button--medium{
-  min-width: 60px;
-  min-height: 28px;
-}
-
-.button--large{
-  min-width: 100px;
-  min-height: 45px;
-}
-
-.button:hover{
-  transition: 0.5s;
-  cursor: pointer;
-}
-
-.button--delete{
-  background-color: #ff0000;
-}
-
-.button--delete:hover {
-  background: #e91010;
-}
-
-.button--primary{
-  background-color: #0055ff;
-}
-
-.button--primary:hover {
-  background: #0055dd;
-}
-
 .edit_input{
   font-family: "Roboto Mono", monospace;
   width: 90%;

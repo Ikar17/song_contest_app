@@ -30,7 +30,7 @@ th{
     background-color: white;
 }
 
-input[type=submit]{
+/* input[type=submit]{
     min-width: 100px;
     min-height: 45px;
     padding: 5px;
@@ -47,7 +47,7 @@ input[type=submit]:hover {
     background: #0055dd;
     transition: 0.5s;
     cursor: pointer;
-}
+} */
 
 .edit_edition_headline{
     width: 100%;
@@ -72,10 +72,71 @@ input[type=submit]:hover {
     margin-top: 20px;
 }
 
+.participants table{
+    width: 100%;
+    overflow-x: none;
+}
+  
+.participants th{
+    text-align: center;
+    background-color: #dee2ff;
+}
+  
+.participants td{
+    text-align: left;
+    padding-left: 15px;
+}
+  
+.participants tr{
+    background-color: white;
+    height: 45px;
+}
+
+.participants tr:nth-child(even){
+    background-color: #F9F8F8;
+}
+
+.participants td:nth-child(7){
+    padding-left: 0px;
+}
+
+.participants td:nth-child(3) input{
+    outline: none;
+    text-align: center;
+}
+
+.participants input[type='text'], input[type='url']{
+    border: none;
+    background-color: transparent;
+    height: 25px;
+    font-family: "Roboto Mono", monospace;
+}
+
+.song_panel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+}
+
+
 @media only screen and (max-width: 1050px) {
 
     input[type=submit] {
         margin: 10px 0;
+    }
+
+    .participants table{
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 90%;
+    }
+    
+    .participants table tbody {
+        display: table;
+        width: 100%;
     }
   
 }
