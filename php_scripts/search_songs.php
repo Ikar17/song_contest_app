@@ -3,12 +3,10 @@
     $json = file_get_contents("php://input");
     $data = json_decode($json);
 
-    $singer = $data->singer;
-    $title = $data->title;
+    require_once "./sanitize_validate.php";
+    $singer = sanitize_string($data->singer);
+    $title = sanitize_string($data->title);
     $data = array("results" => []);
-
-    #walidacja danych
-
 
     #połączenie z bazą danych 
     require_once "./db_config.php";

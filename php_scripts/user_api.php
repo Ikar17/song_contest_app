@@ -3,8 +3,12 @@
 function does_user_participate($db_connect, $nickname, $edition){
 
     //pobieranie id edycji
-    $sql = "SELECT Id FROM edycje WHERE Nr_edycji ='$edition'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT Id FROM edycje WHERE Nr_edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
     if($response == false || $response->num_rows == 0){
         return false;
     }
@@ -15,9 +19,13 @@ function does_user_participate($db_connect, $nickname, $edition){
 
 
     $sql = "SELECT * FROM piosenki JOIN użytkownicy ON użytkownicy.Id = piosenki.id_uzytkownika
-     WHERE użytkownicy.Nickname = '$nickname' AND Id_edycji = '$edition_id'";
+     WHERE użytkownicy.Nickname = ? AND Id_edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("si", $nickname, $edition_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
 
-    $result = $db_connect->query($sql);
     if($result == false) return true;
     if($result->num_rows != 0){
         $result->close();
@@ -31,9 +39,13 @@ function does_user_participate($db_connect, $nickname, $edition){
 function get_all_participants($db_connect, $edition){
     $sql = "SELECT Nickname, Wykonawca, Tytul, Link, piosenki.Id as songId 
     FROM piosenki JOIN użytkownicy ON piosenki.id_uzytkownika = użytkownicy.id 
-    JOIN edycje ON piosenki.id_edycji = edycje.Id WHERE edycje.Nr_edycji = '$edition'";
+    JOIN edycje ON piosenki.id_edycji = edycje.Id WHERE edycje.Nr_edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
 
-    $result = $db_connect->query($sql);
     if($result == false || $result->num_rows == 0) return []; 
 
     $participants = [];
@@ -58,9 +70,13 @@ function get_all_participants($db_connect, $edition){
 function get_all_participants_without_one_user($db_connect, $edition, $userNick){
     $sql = "SELECT Nickname, Wykonawca, Tytul, Link, piosenki.Id as songId 
     FROM piosenki JOIN użytkownicy ON piosenki.id_uzytkownika = użytkownicy.id 
-    JOIN edycje ON piosenki.id_edycji = edycje.Id WHERE edycje.Nr_edycji = '$edition' AND NOT użytkownicy.Nickname = '$userNick'";
+    JOIN edycje ON piosenki.id_edycji = edycje.Id WHERE edycje.Nr_edycji =  ? AND NOT użytkownicy.Nickname = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("is", $edition, $userNick);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
 
-    $result = $db_connect->query($sql);
     if($result == false || $result->num_rows == 0) return []; 
 
     $participants = [];
@@ -84,9 +100,13 @@ function get_all_participants_without_one_user($db_connect, $edition, $userNick)
 
 function does_user_voting($db_connect, $nickname, $edition){
     $sql = "SELECT * FROM głosowanie JOIN użytkownicy ON głosowanie.Id_uzytkownika = użytkownicy.Id
-            WHERE Id_edycji = '$edition' AND użytkownicy.Nickname = '$nickname'";
+            WHERE Id_edycji = ? AND użytkownicy.Nickname = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("is", $edition, $nickname);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();          
 
-    $response = $db_connect->query($sql);
     if($response && $response->num_rows == 0){
         $response->close();
         return false;
@@ -192,8 +212,13 @@ function show_results($db_connect, $edition, $results_time){
     }
 
     //pobranie listy piosenek bioracych udzial w edycji
-    $sql = "SELECT DISTINCT piosenki.Id, Wykonawca, Tytul FROM piosenki JOIN edycje ON piosenki.id_edycji = edycje.id WHERE edycje.Nr_edycji ='$edition'";
-    $result = $db_connect->query($sql);
+    $sql = "SELECT DISTINCT piosenki.Id, Wykonawca, Tytul FROM piosenki JOIN edycje ON piosenki.id_edycji = edycje.id WHERE edycje.Nr_edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();   
+
     $songs_results_arrray;
     $songs_id_list = [];
     for($i=0; $i<$result->num_rows; $i++){
@@ -214,9 +239,13 @@ function show_results($db_connect, $edition, $results_time){
 
     //pobranie wynikow glosowania - pierwsze miejsca
     $sql = "SELECT Id_piosenki_1, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
-            WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_1";
+            WHERE edycje.Nr_edycji = ? GROUP BY Id_piosenki_1";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();  
 
-    $result = $db_connect->query($sql);
     for($i=0; $i<$result->num_rows; $i++){
         $row = $result->fetch_assoc();
         $id = $row['Id_piosenki_1'];
@@ -229,9 +258,13 @@ function show_results($db_connect, $edition, $results_time){
     
     //pobranie wynikow glosowania - drugie miejsce
     $sql = "SELECT Id_piosenki_2, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
-            WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_2";
+            WHERE edycje.Nr_edycji = ? GROUP BY Id_piosenki_2";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();  
 
-    $result = $db_connect->query($sql);
     for($i=0; $i<$result->num_rows; $i++){
         $row = $result->fetch_assoc();
         $id = $row['Id_piosenki_2'];
@@ -244,9 +277,13 @@ function show_results($db_connect, $edition, $results_time){
 
     //pobranie wynikow glosowania - trzecie miejsce
     $sql = "SELECT Id_piosenki_3, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
-            WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_3";
+            WHERE edycje.Nr_edycji = ? GROUP BY Id_piosenki_3";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();  
 
-    $result = $db_connect->query($sql);
     for($i=0; $i<$result->num_rows; $i++){
         $row = $result->fetch_assoc();
         $id = $row['Id_piosenki_3'];
@@ -324,8 +361,13 @@ function show_users_ranking($db_connect){
 
     //pobieranie wszystkich zakończonych edycji
     $current_datetime = date("Y-m-d H:i:s");
-    $sql = "SELECT Nr_edycji FROM edycje WHERE Wyniki <= '$current_datetime'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT Nr_edycji FROM edycje WHERE Wyniki <= ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("s", $current_datetime);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();  
+
     if($response == false) return "Błąd bazy danych";
     if($response->num_rows==0){
         $response->close();
@@ -393,8 +435,13 @@ function show_users_ranking($db_connect){
 }
 
 function get_user_id_from_song_id($db_connect, $song_id){
-    $sql = "SELECT użytkownicy.Id FROM użytkownicy JOIN piosenki ON piosenki.Id_uzytkownika = użytkownicy.Id WHERE piosenki.Id = '$song_id'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT użytkownicy.Id FROM użytkownicy JOIN piosenki ON piosenki.Id_uzytkownika = użytkownicy.Id WHERE piosenki.Id = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $song_id);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
+    
     if($response == false || $response->num_rows == 0){
         return -1;
     }
@@ -410,8 +457,13 @@ function compare_users($first_user, $second_user){
 
 function get_top_results_of_edition($db_connect, $edition){
     //pobieram rezultaty
-    $sql = "SELECT * FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id WHERE edycje.Nr_Edycji = '$edition'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT * FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id WHERE edycje.Nr_Edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false) return [];
     if($response->num_rows == 0){
         $response->close();
@@ -419,8 +471,13 @@ function get_top_results_of_edition($db_connect, $edition){
     }
 
     //pobranie listy piosenek bioracych udzial w edycji
-    $sql = "SELECT DISTINCT piosenki.* FROM piosenki JOIN edycje ON piosenki.id_edycji = edycje.id WHERE edycje.Nr_edycji ='$edition'";
-    $response = $db_connect->query($sql);
+    $sql = "SELECT DISTINCT piosenki.* FROM piosenki JOIN edycje ON piosenki.id_edycji = edycje.id WHERE edycje.Nr_edycji = ?";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false) return [];
     if($response->num_rows == 0){
         $response->close();
@@ -437,10 +494,14 @@ function get_top_results_of_edition($db_connect, $edition){
     
     
     //pobranie wynikow glosowania - pierwsze miejsca
-     $sql = "SELECT Id_piosenki_1, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
-                WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_1";
-    
-    $response = $db_connect->query($sql);
+    $sql = "SELECT Id_piosenki_1, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
+                WHERE edycje.Nr_edycji = ? GROUP BY Id_piosenki_1";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false) return [];
     if($response->num_rows == 0){
         $response->close();
@@ -459,9 +520,13 @@ function get_top_results_of_edition($db_connect, $edition){
         
     //pobranie wynikow glosowania - drugie miejsce
     $sql = "SELECT Id_piosenki_2, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
-                WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_2";
-    
-    $response = $db_connect->query($sql);
+                WHERE edycje.Nr_edycji = ? GROUP BY Id_piosenki_2";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false) return [];
     if($response->num_rows == 0){
         $response->close();
@@ -480,9 +545,13 @@ function get_top_results_of_edition($db_connect, $edition){
     
     //pobranie wynikow glosowania - trzecie miejsce
     $sql = "SELECT Id_piosenki_3, COUNT(*) as how_many FROM głosowanie JOIN edycje ON głosowanie.Id_edycji = edycje.Id
-                WHERE edycje.Nr_edycji = '$edition' GROUP BY Id_piosenki_3";
-    
-    $response = $db_connect->query($sql);
+                WHERE edycje.Nr_edycji = ? GROUP BY Id_piosenki_3";
+    $stmt = $db_connect->prepare($sql);
+    $stmt->bind_param("i", $edition);
+    $stmt->execute();
+    $response = $stmt->get_result();
+    $stmt->close();
+
     if($response == false) return [];
     if($response->num_rows == 0){
         $response->close();

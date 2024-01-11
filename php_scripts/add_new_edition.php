@@ -112,7 +112,6 @@
     $stmt = $db_connect->prepare("INSERT INTO edycje (Nr_edycji, Zgloszenia, Glosowanie, Wyniki) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("isss", $new_edition_number, $participant_deadline, $voting_deadline, $result_deadline);
     $stmt->execute();
-
     $stmt->close();
     $db_connect->close();
 
