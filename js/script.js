@@ -30,6 +30,7 @@ function getSongs(singer, title) {
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         return data;
       });
     
@@ -54,10 +55,18 @@ function showSongs(data, containerHandler){
         //pobieranie danych
         const singer = data.results[i].Wykonawca;
         const title = data.results[i].Tytul;
+        const link = data.results[i].Link;
         //tworzenie elementu html
         const songDiv = document.createElement('div');
+
+        const a = document.createElement('a');
+        a.setAttribute('href', link);
+        a.innerText = "Posłuchaj";
+
         songDiv.classList.add('song');
         songDiv.innerText = `${i+1}.  ${singer} - ${title}`;
+        songDiv.appendChild(a);
+
         containerHandler.appendChild(songDiv);
     }
 }

@@ -83,7 +83,7 @@ input[type=submit]{
     min-height: 45px;
     padding: 5px;
     border-radius: 4px;
-    background-color: #0055ff;;
+    background-color: #0055ff;
     outline: none;
     border: 1px solid transparent;
     color: white;
@@ -114,9 +114,15 @@ input[type=submit]:hover {
 }
 
 .song{
+    display: flex;
+    gap: 30px;
     width: 100%;
     padding: 8px;
     background-color: white;
+}
+
+.song a{
+    color: #0055ff;
 }
 
 @media only screen and (max-width: 1050px) {
